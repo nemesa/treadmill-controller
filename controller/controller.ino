@@ -2,17 +2,16 @@
 //SCL -> A5
 //SDA -> A4
 
-#include <ezButton.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <EEPROM.h>
-
+#include "jojoystick.cpp"
 
 #define jX A0
 #define jY A1
-#define sw 10
+#define jSW 10
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
@@ -26,14 +25,17 @@ Adafruit_SSD1306 display(OLED_RESET);
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
-ezButton button(sw);
+
+JojoystickHandler jh;
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Setup");
-  pinMode(jX, INPUT);
-  pinMode(jY, INPUT);
-  button.setDebounceTime(50);  // set debounce time to 50 milliseconds
+
+  jh.setup(jX,jY,jSW);
+
+  
+  //button.setDebounceTime(50);  // set debounce time to 50 milliseconds
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
   // init done
@@ -66,12 +68,13 @@ void setup() {
     EEPROM.write(5, 12);
   }
 }
-int x = 0;
-int y = 0;
-int bValue = 0;
+//int x = 0;
+//int y = 0;
+//int bValue = 0;
 
 void loop() {
-  button.loop();  // MUST call the loop() function first
+  jh.loop();
+  /*button.loop();  // MUST call the loop() function first
   // put your main code here, to run repeatedly:
   x = analogRead(jX);
   y = analogRead(jY);
@@ -113,7 +116,7 @@ void loop() {
   if (y > 600) {
     testdrawchar("DOWN");
     Serial.println("Down");
-  }
+  }*/
 
   //Serial.print("x: ");
   //Serial.print(x);
