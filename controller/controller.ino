@@ -7,6 +7,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <EEPROM.h>
 
 
 #define jX A0
@@ -52,6 +53,18 @@ void setup() {
   display.setCursor(0, 0);
   display.println("");
   display.display();
+
+  for (int i = 0; i <= 10; i++) {  //i max = 512
+    int eepromValue = EEPROM.read(i);
+    Serial.print("address: ");
+    Serial.print(i);
+    Serial.print("value: ");
+    Serial.println(eepromValue);
+  }
+
+  if (EEPROM.read(5) != 12) {
+    EEPROM.write(5, 12);
+  }
 }
 int x = 0;
 int y = 0;
@@ -74,7 +87,7 @@ void loop() {
 
   if (button.isReleased()) {
     //display.fillRect(0, 0, 128, 64, BLACK);
-  display.clearDisplay();
+    display.clearDisplay();
     display.display();
 
     Serial.println("The button is released");
