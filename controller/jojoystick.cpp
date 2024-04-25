@@ -18,13 +18,13 @@ public:
     //Serial.print(_x);
     //Serial.print(" y: ");
     //Serial.println(_y);
-    if (_x < 200) {
+    if (_x < 100) {
       _isLeft = true;
       if (_isRight) {
         rightReleased();
       }
       _isRight = false;
-    } else if (_x > 800) {
+    } else if (_x > 900) {
       _isRight = true;
 
       if (_isLeft) {
@@ -42,13 +42,13 @@ public:
       _isRight = false;
     }
 
-    if (_y < 200) {
+    if (_y < 100) {
       _isUp = true;
       if (_isDown) {
         downReleased();
       }
       _isDown = false;
-    } else if (_y > 800) {
+    } else if (_y > 900) {
       _isDown = true;
 
       if (_isUp) {
