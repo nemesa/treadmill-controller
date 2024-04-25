@@ -31,7 +31,9 @@ public:
     dh.debug("|right");
   }
   void select() {
-    dh.debug("select");
+    if (isStartScreen) {
+      startScreenSelect();
+    }
   }
 
 private:
@@ -56,6 +58,10 @@ private:
     }
     user = eh.readUser(num);
     dh.main(user.name);
+  }
+  void startScreenSelect() {
+    eh.setLastUser(user.num);
+    dh.main("SELECTED");
   }
   bool isStartScreen;
   UserDataStruct user;

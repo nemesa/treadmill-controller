@@ -5,10 +5,17 @@ public:
   void setup(uint8_t pinX, uint8_t pinY, uint8_t pinSW) {
     _pinX = pinX;
     _pinY = pinY;
+    _pinSW = pinSW;
     Serial.println("JojoystickHandler-setup");
     pinMode(_pinX, INPUT);
     pinMode(_pinY, INPUT);
+    pinMode(_pinSW, INPUT_PULLUP);
     _isLeft = false;
+    _isRight = false;
+    _isUp = false;
+    _isDown = false;
+    _isSW = false;
+    _lastButtonPress = 0;
   }
   void loop() {
 
@@ -18,6 +25,20 @@ public:
     _isDownReleased = false;
     _x = analogRead(_pinX);
     _y = analogRead(_pinY);
+   
+    if (digitalRead(_pinSW) == 0) {
+
+      if (!_isSW) {
+        _lastButtonPress = millis();
+      }
+      _isSW = true;
+    } else {
+      if (_isSW && _lastButtonPress + 100 < millis()) {
+        swReleased();
+      }
+    }
+
+
     if (_x < 100) {
       _isLeft = true;
       if (_isRight) {
@@ -66,46 +87,80 @@ public:
       _isDown = false;
     }
   }
-  bool isLeftReleased(){
+  bool isLeftReleased() {
     return _isLeftReleased;
   }
-  bool isRightReleased(){
+  bool isRightReleased() {
     return _isRightReleased;
   }
-  bool isUpReleased(){
+  bool isUpReleased() {
     return _isUpReleased;
   }
-  bool isDownReleased(){
+  bool isDownReleased() {
     return _isDownReleased;
+  }
+  bool isSWReleased() {
+    return _isSWReleased;
   }
 private:
   bool _isLeft;
   bool _isRight;
   bool _isUp;
   bool _isDown;
+  bool _isSW;
   int _x;
   int _y;
-  int _pinX;
-  int _pinY;
+  int _sw;
+  uint8_t _pinX;
+  uint8_t _pinY;
+  uint8_t _pinSW;
   bool _isLeftReleased;
   bool _isRightReleased;
   bool _isUpReleased;
   bool _isDownReleased;
+  bool _isSWReleased;
+  unsigned long _lastButtonPress;
 
   void rightReleased() {
+    _isLeftReleased = false;
+    _isUpReleased = false;
+    _isDownReleased = false;
+    _isSWReleased = false;
     _isRightReleased = true;
     Serial.println("RIGHT is released");
   }
   void leftReleased() {
+    _isRightReleased = false;
+    _isUpReleased = false;
+    _isDownReleased = false;
+    _isSWReleased = false;
     _isLeftReleased = true;
     Serial.println("LEFT is released");
   }
   void upReleased() {
+    _isLeftReleased = false;
+    _isRightReleased = false;
+    _isDownReleased = false;
+    _isSWReleased = false;
     _isUpReleased = true;
     Serial.println("UP is released");
   }
   void downReleased() {
+    _isLeftReleased = false;
+    _isRightReleased = false;
+    _isUpReleased = false;
+    _isSWReleased = false;
     _isDownReleased = true;
     Serial.println("DOWN is released");
+  }
+  void swReleased() {
+    _isSW = false;
+    _lastButtonPress = 0;
+    _isLeftReleased = false;
+    _isRightReleased = false;
+    _isUpReleased = false;
+    _isDownReleased = false;
+    _isSWReleased = true;
+    Serial.println("SW is released");
   }
 };

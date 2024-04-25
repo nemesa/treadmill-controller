@@ -8,7 +8,7 @@
 
 #define jX A0
 #define jY A1
-#define jSW 10
+#define jSW 8
 
 JojoystickHandler jh;
 MenuHandler mh;
@@ -36,6 +36,9 @@ void loop() {
   }
   if (jh.isRightReleased()) {
     mh.right();
+  }
+  if (jh.isSWReleased()) {
+    mh.select();
   }
 
   delay(10);
