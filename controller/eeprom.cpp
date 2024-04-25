@@ -9,6 +9,7 @@ public:
 
   void setup() {
     Serial.println("EEPROMHandler-setup");
+
     struct UserDataStruct defaultUser;
 
     defaultUser.walkSpeed = 51;
@@ -41,22 +42,24 @@ public:
       defaultUser.name = "user4";
       writeUserData(defaultUser);
     }
-    readTest();
+    //readTest();
   }
-  void readTest() {
-    for (int i = 0; i <= 30; i++) {  //i max = 512
-      int eepromValue = EEPROM.read(i);
-      Serial.print("address: ");
-      Serial.print(i);
-      Serial.print("value: ");
-      Serial.println(eepromValue);
+  void wipeAll() {
+    for (int i = 0; i <= 512; i++) {
+      EEPROM.write(i, 255);
     }
-
-    // if (EEPROM.read(5) != 12) {
-    //   EEPROM.write(5, 12);
-    // }
   }
-  //void writeUserData(uint8_t userNo, char* name, uint8_t walkSpeed, uint8_t runSpeed, uint8_t lastSelection) {
+  void setLastUser(uint8_t num) {
+    EEPROM.update(0, num);
+  }
+  UserDataStruct getLastSelectedUser() {
+    uint8_t lastUser = EEPROM.read(0);
+    if (lastUser > 4) {
+      lastUser = 1;
+    }
+    return readUser(lastUser);
+  }
+
   void writeUserData(struct UserDataStruct user) {
 
     uint8_t offset = user.num * 10;
@@ -76,15 +79,18 @@ public:
     struct UserDataStruct user;
     user.num = num;
     user.name = "";
-    char name[6];
+    char* name="       ";
     uint8_t offset = user.num * 10;
     for (int i = 0; i <= 6; i++) {
       name[i] = (char)EEPROM.read(offset + i);
+      //Serial.println(name);
     }
     user.name = name;
     user.walkSpeed = EEPROM.read(offset + 7);
     user.runSpeed = EEPROM.read(offset + 8);
     user.lastSelection = EEPROM.read(offset + 9);
+
+    //Serial.println(String(user.num) + " " + user.name + " - " + String(user.walkSpeed) + "|" + String(user.runSpeed) + "|" + String(user.lastSelection) + "|");
     return user;
   }
 };

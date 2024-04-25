@@ -50,6 +50,13 @@ public:
     display.drawFastHLine(0, 9, 128, WHITE);
     display.display();
   }
+  void main(char* text) {
+    display.setTextSize(2);
+    display.fillRect(0, 10, 128, 16, BLACK);
+    display.setCursor(0, 10);
+    display.println(text);
+    display.display();
+  }
 private:
   Adafruit_SSD1306 display;
 };
