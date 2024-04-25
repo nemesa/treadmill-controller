@@ -11,13 +11,13 @@ public:
     _isLeft = false;
   }
   void loop() {
-    //Serial.println("JojoystickHandler-loop");
+
+    _isLeftReleased = false;
+    _isRightReleased = false;
+    _isUpReleased = false;
+    _isDownReleased = false;
     _x = analogRead(_pinX);
     _y = analogRead(_pinY);
-    //Serial.print("x: ");
-    //Serial.print(_x);
-    //Serial.print(" y: ");
-    //Serial.println(_y);
     if (_x < 100) {
       _isLeft = true;
       if (_isRight) {
@@ -66,6 +66,18 @@ public:
       _isDown = false;
     }
   }
+  bool isLeftReleased(){
+    return _isLeftReleased;
+  }
+  bool isRightReleased(){
+    return _isRightReleased;
+  }
+  bool isUpReleased(){
+    return _isUpReleased;
+  }
+  bool isDownReleased(){
+    return _isDownReleased;
+  }
 private:
   bool _isLeft;
   bool _isRight;
@@ -75,16 +87,25 @@ private:
   int _y;
   int _pinX;
   int _pinY;
+  bool _isLeftReleased;
+  bool _isRightReleased;
+  bool _isUpReleased;
+  bool _isDownReleased;
+
   void rightReleased() {
+    _isRightReleased = true;
     Serial.println("RIGHT is released");
   }
   void leftReleased() {
+    _isLeftReleased = true;
     Serial.println("LEFT is released");
   }
   void upReleased() {
+    _isUpReleased = true;
     Serial.println("UP is released");
   }
   void downReleased() {
+    _isDownReleased = true;
     Serial.println("DOWN is released");
   }
 };
