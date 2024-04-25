@@ -2,17 +2,18 @@
 //SCL -> A5
 //SDA -> A4
 
-#include <EEPROM.h>
+
 #include "jojoystick.cpp"
-#include "displayhandler.cpp"
+#include "display.cpp"
+#include "eeprom.cpp"
 
 #define jX A0
 #define jY A1
 #define jSW 10
 
 JojoystickHandler jh;
-
 DisplayHandler dh;
+EEPROMHandler eh;
 
 void setup() {
   Serial.begin(115200);
@@ -20,18 +21,11 @@ void setup() {
 
   jh.setup(jX,jY,jSW);
   dh.setup();
-  
-  for (int i = 0; i <= 10; i++) {  //i max = 512
-    int eepromValue = EEPROM.read(i);
-    Serial.print("address: ");
-    Serial.print(i);
-    Serial.print("value: ");
-    Serial.println(eepromValue);
-  }
+  eh.setup();
 
-  if (EEPROM.read(5) != 12) {
-    EEPROM.write(5, 12);
-  }
+  //eh.readTest();
+  
+  
 }
 
 void loop() {

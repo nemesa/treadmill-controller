@@ -10,6 +10,7 @@
 class DisplayHandler {
 public:
   void setup() {
+    Serial.println("DisplayHandler-setup");
     _display = new Adafruit_SSD1306(4); //OLED_RESET=4
     _display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
     // init done
