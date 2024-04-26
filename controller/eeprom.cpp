@@ -1,6 +1,6 @@
 #include <EEPROM.h>
 #include "Arduino.h"
-#include "user.h"
+#include "userdata.h"
 
 
 
@@ -59,7 +59,6 @@ public:
     }
     return readUser(lastUser);
   }
-
   void writeUserData(struct UserDataStruct user) {
 
     uint8_t offset = user.num * 10;
@@ -92,5 +91,5 @@ public:
 
     //Serial.println(String(user.num) + " " + user.name + " - " + String(user.walkSpeed) + "|" + String(user.runSpeed) + "|" + String(user.lastSelection) + "|");
     return user;
-  }
+  }  
 };
