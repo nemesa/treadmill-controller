@@ -14,7 +14,8 @@ public:
 
     user = eh.getLastSelectedUser();
 
-    startScreen();
+    //startScreen();
+    workoutScreen();
   }
   void down() {
     if (isStartScreen) {
@@ -89,7 +90,7 @@ private:
     dh.mainSmallLine1("Do Last Workout");
     WorkoutDataStruct lastWorkout = wh.getById(user.lastSelection);
     
-    Serial.println("lastWorkout.name");
+    Serial.print("lastWorkout.name");
     Serial.println(lastWorkout.name);
     dh.mainSmallLine2(lastWorkout.name);
   }

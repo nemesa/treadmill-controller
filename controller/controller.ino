@@ -8,7 +8,7 @@
 
 #define jX A0
 #define jY A1
-#define jSW 8
+#define jSW 4
 
 JojoystickHandler jh;
 MenuHandler mh;
