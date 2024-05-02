@@ -17,6 +17,7 @@ public:
     subWorkoutScreen = 0;
     isStartScreen = false;
     isWorkoutScreen = false;
+    otherWorkoutId = 1;
     //startScreen();
     workoutScreen();
   }
@@ -91,13 +92,48 @@ private:
     dh.cleanAll();
     dh.navigationOptions(true, true, true, true);
     dh.header("Select Workout!");
+    workoutStartLastScreen();
+  }
+  void workoutDetailsScreen(uint8_t id) {
+    subWorkoutScreen = 1;
+    dh.cleanAll();
+    dh.navigationOptions(false, true, false, false);
+    dh.header("Workout Details:");
+    dh.mainSmallLine1Str(wh.getNameById(id));
+    dh.mainSmallLine2(wh.getById(id));
+  }
+  void workoutStartLastScreen() {
+    subWorkoutScreen = 0;
     dh.mainSmallLine1("Start Workout:");
-
     dh.mainSmallLine2Str(wh.getNameById(user.lastSelection));
   }
+  void workoutOtherScreen() {
+    subWorkoutScreen = 2;
+    dh.mainSmallLine1("Other Workouts");
+    dh.mainSmallLine2("");
+  }
+  void userSettingsScreen() {
+    subWorkoutScreen = 3;
+    dh.mainSmallLine1("User Settings");
+    dh.mainSmallLine2("");
+  }
   void workoutScreenDown() {
+    if (subWorkoutScreen == 0) {
+      workoutOtherScreen();
+    } else if (subWorkoutScreen == 2) {
+      userSettingsScreen();
+    } else if (subWorkoutScreen == 3) {
+      workoutStartLastScreen();
+    }
   }
   void workoutScreenUp() {
+    if (subWorkoutScreen == 0) {
+      userSettingsScreen();
+    } else if (subWorkoutScreen == 2) {
+      workoutStartLastScreen();
+    } else if (subWorkoutScreen == 3) {
+      workoutOtherScreen();
+    }
   }
   void workoutScreenSelect() {
   }
@@ -111,17 +147,13 @@ private:
   }
   void workoutScreenRight() {
     if (subWorkoutScreen == 0) {
-      subWorkoutScreen = 1;
-      dh.cleanAll();
-      dh.navigationOptions(false, true, false, false);
-      dh.header("Workout Details:");
-      dh.mainSmallLine1Str(wh.getNameById(user.lastSelection));
-      dh.mainSmallLine2Str(wh.getById(user.lastSelection));
+      workoutDetailsScreen(user.lastSelection);
     }
   }
   bool isStartScreen;
   bool isWorkoutScreen;
   int subWorkoutScreen;
+  int otherWorkoutId;
   UserDataStruct user;
   DisplayHandler dh;
   EEPROMHandler eh;
