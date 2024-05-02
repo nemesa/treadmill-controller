@@ -6,7 +6,7 @@
 class WorkoutHandler {
 public:
   void setup() {
-    Serial.println("WorkoutHandler-setup");   
+    Serial.println("WorkoutHandler-setup");
   }
 
   String getNameById(uint8_t id) {
@@ -15,11 +15,21 @@ public:
     }
   }
 
+  String getById(uint8_t id) {
+    if (id < 25) {
+      return get5KTraining(id);
+    }
+  }
+
 private:
   String get5KTrainingName(uint8_t week) {
-    String name = String("5KM - week ") + String(week);    
-    
+    String name = String("5KM - week ") + String(week);
+
     return name;
+  }
+
+  String get5KTraining(uint8_t week) {
+    return "2W|[5|1R|1W]";
     /*
     
 

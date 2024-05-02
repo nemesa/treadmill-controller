@@ -61,6 +61,13 @@ public:
     display.println(text);
     display.display();
   }
+  void mainSmallLine1Str(String text) {
+    display.setTextSize(1);
+    display.fillRect(7, 14, 115, 8, BLACK);
+    display.setCursor(7, 14);
+    display.println(text);
+    display.display();
+  }
   void mainSmallLine2(char* text) {
     display.setTextSize(1);
     display.fillRect(7, 22, 115, 8, BLACK);

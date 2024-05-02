@@ -14,6 +14,9 @@ public:
 
     user = eh.getLastSelectedUser();
 
+    subWorkoutScreen = 0;
+    isStartScreen = false;
+    isWorkoutScreen = false;
     //startScreen();
     workoutScreen();
   }
@@ -84,13 +87,13 @@ private:
   void workoutScreen() {
     isStartScreen = false;
     isWorkoutScreen = true;
+    subWorkoutScreen = 0;
     dh.cleanAll();
     dh.navigationOptions(true, true, true, true);
     dh.header("Select Workout!");
     dh.mainSmallLine1("Start Workout:");
-    String lastWorkoutName = wh.getNameById(user.lastSelection);
-    
-    dh.mainSmallLine2Str(lastWorkoutName);
+
+    dh.mainSmallLine2Str(wh.getNameById(user.lastSelection));
   }
   void workoutScreenDown() {
   }
@@ -99,12 +102,26 @@ private:
   void workoutScreenSelect() {
   }
   void workoutScreenLeft() {
-    startScreen();
+    if (subWorkoutScreen == 0) {
+      startScreen();
+    }
+    if (subWorkoutScreen == 1) {
+      workoutScreen();
+    }
   }
   void workoutScreenRight() {
+    if (subWorkoutScreen == 0) {
+      subWorkoutScreen = 1;
+      dh.cleanAll();
+      dh.navigationOptions(false, true, false, false);
+      dh.header("Workout Details:");
+      dh.mainSmallLine1Str(wh.getNameById(user.lastSelection));
+      dh.mainSmallLine2Str(wh.getById(user.lastSelection));
+    }
   }
   bool isStartScreen;
   bool isWorkoutScreen;
+  int subWorkoutScreen;
   UserDataStruct user;
   DisplayHandler dh;
   EEPROMHandler eh;
