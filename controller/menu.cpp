@@ -87,12 +87,10 @@ private:
     dh.cleanAll();
     dh.navigationOptions(true, true, true, true);
     dh.header("Select Workout!");
-    dh.mainSmallLine1("Do Last Workout");
-    WorkoutDataStruct lastWorkout = wh.getById(user.lastSelection);
+    dh.mainSmallLine1("Start Workout:");
+    String lastWorkoutName = wh.getNameById(user.lastSelection);
     
-    Serial.print("lastWorkout.name");
-    Serial.println(lastWorkout.name);
-    dh.mainSmallLine2(lastWorkout.name);
+    dh.mainSmallLine2Str(lastWorkoutName);
   }
   void workoutScreenDown() {
   }

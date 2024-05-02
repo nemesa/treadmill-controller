@@ -6,34 +6,20 @@
 class WorkoutHandler {
 public:
   void setup() {
-    Serial.println("WorkoutHandler-setup");
-    for (int i = 0; i <= 23; i++) {
-      struct WorkoutDataStruct workout;
-      workout.name = "                   ";
-      int no = i + 1;
-      String name = String("      5KM - week ") + String(no);
-
-      name.toCharArray(workout.name, 20);
-      w_5k[i] = workout;
-      Serial.println(String(i) + " " + w_5k[i].name);
-    }
-    Serial.println(w_5k[2].name);
+    Serial.println("WorkoutHandler-setup");   
   }
 
-  WorkoutDataStruct getById(uint8_t id) {
-    Serial.println("WorkoutHandler-getById " + String(id));
-
+  String getNameById(uint8_t id) {
     if (id < 25) {
-      return get5KTraining(id);
+      return get5KTrainingName(id);
     }
   }
 
 private:
-  WorkoutDataStruct get5KTraining(uint8_t week) {
-    struct WorkoutDataStruct workout;
-    workout.name = "                   ";
-    String name = String("      5KM - week ") + String(week);    
-    name.toCharArray(workout.name, 20);
+  String get5KTrainingName(uint8_t week) {
+    String name = String("5KM - week ") + String(week);    
+    
+    return name;
     /*
     
 
@@ -64,5 +50,4 @@ private:
     
     */
   }
-  WorkoutDataStruct w_5k[23];
 };

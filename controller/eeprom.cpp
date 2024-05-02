@@ -75,6 +75,7 @@ public:
     EEPROM.update(offset + 9, user.lastSelection);
   }
   UserDataStruct readUser(uint8_t num) {
+    Serial.println("EEPROMHandler-readUser"+String(num));
     struct UserDataStruct user;
     user.num = num;
     user.name = "";

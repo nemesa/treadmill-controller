@@ -25,7 +25,7 @@ public:
     _isDownReleased = false;
     _x = analogRead(_pinX);
     _y = analogRead(_pinY);
-   
+    //Serial.println("x:"+String(_x)+ " y:"+String(_y));
     if (digitalRead(_pinSW) == 0) {
 
       if (!_isSW) {

@@ -12,14 +12,11 @@ public:
   void setup() {
     Serial.println("DisplayHandler-setup");
     display = new Adafruit_SSD1306(4);          //OLED_RESET=4
+    delay(50);
+    //Serial.println("display.begin");
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
-    // init done
-    // Show image buffer on the display hardware.
-    // Since the buffer is intialized with an Adafruit splashscreen
-    // internally, this will display the splashscreen.
-    //display.display();
-    //delay(2000);
-    // Clear the buffer.
+    delay(50);
+    //Serial.println("display.clearDisplay");
     display.clearDisplay();
 
     // draw the first ~12 characters in the font
@@ -65,6 +62,13 @@ public:
     display.display();
   }
   void mainSmallLine2(char* text) {
+    display.setTextSize(1);
+    display.fillRect(7, 22, 115, 8, BLACK);
+    display.setCursor(7, 22);
+    display.println(text);
+    display.display();
+  }
+  void mainSmallLine2Str(String text) {
     display.setTextSize(1);
     display.fillRect(7, 22, 115, 8, BLACK);
     display.setCursor(7, 22);
