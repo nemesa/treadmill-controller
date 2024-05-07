@@ -7,7 +7,7 @@ class MenuHandler {
 public:
 
   void setup() {
-    Serial.println("MenuHandler-setup");
+    Serial.println(F("MenuHandler-setup"));
     dh.setup();
     eh.setup();
     wh.setup();
@@ -20,31 +20,47 @@ public:
     if (menu == 0) {
       readNextUser();
       dh.main(user.name);
-    }
-    if (menu == 1) {
+    } else if (menu == 1) {
       subMenu = subMenu + 1;
       if (subMenu == 4) {
         subMenu = 1;
       }
       setMenu(1, subMenu);
+    } else if (menu == 4) {
+      subMenu = subMenu + 1;
+      if (subMenu == 25) {
+        subMenu = 1;
+      }
+      setMenu(4, subMenu);
     }
   }
   void up() {
     if (menu == 0) {
       readPrevUser();
       dh.main(user.name);
-    }
-    if (menu == 1) {
+    } else if (menu == 1) {
       subMenu = subMenu - 1;
       if (subMenu == 0) {
         subMenu = 3;
       }
       setMenu(1, subMenu);
+    } else if (menu == 4) {
+      subMenu = subMenu - 1;
+      if (subMenu == 0) {
+        subMenu = 24;
+      }
+      setMenu(4, subMenu);
     }
   }
   void left() {
     if (menu == 1) {
       setMenu(0, -1);
+    } else if (menu == 3) {
+      setMenu(1, 1);
+    } else if (menu == 4) {
+      setMenu(1, 2);
+    } else if (menu == 5) {
+      setMenu(1, 3);
     }
   }
   void right() {
@@ -56,6 +72,12 @@ public:
     if (menu == 0) {
       eh.setLastUser(user.num);
       setMenu(1, 1);
+    } else if (menu == 1 && subMenu == 2) {
+      setMenu(4, user.lastSelection);
+    } else if (menu == 4) {
+      user.lastSelection = subMenu;
+      eh.writeUserData(user);
+      setMenu(1, 1);  // TODO: should start workout here
     }
   }
 
@@ -69,23 +91,43 @@ private:
       dh.header("Welcome!");
       dh.main(user.name);
     } else if (menu == 1) {
-      dh.navigationOptions(true, true, true, true);
       dh.header("Select Workout!");
       if (subMenu == 1) {
+        dh.navigationOptions(true, true, true, true);
         dh.mainSmallLine1("Start Last Selected:");
         dh.mainSmallLine2(wh.getNameById(user.lastSelection));
       } else if (subMenu == 2) {
+        dh.navigationOptions(true, true, true, false);
         dh.mainSmallLine1("Other Workouts");
         dh.mainSmallLine2("");
       } else if (subMenu == 3) {
+        dh.navigationOptions(true, true, true, false);
         dh.mainSmallLine1("User Settings");
         dh.mainSmallLine2("");
       }
     } else if (menu == 3) {
-      /*dh.header("Last Workout Details:");
+      dh.header("Last Workout Details:");
       dh.navigationOptions(false, true, false, false);
       dh.mainSmallLine1(wh.getNameById(user.lastSelection));
-      dh.mainSmallLine2(wh.getById(user.lastSelection));*/
+      dh.mainSmallLine2(wh.getById(user.lastSelection));
+    } else if (menu == 4) {
+      dh.header("Other workouts:");
+      dh.navigationOptions(true, true, true, false);
+      dh.mainSmallLine1(wh.getNameById(subMenu));
+      dh.mainSmallLine2(wh.getById(subMenu));
+    } else if (menu == 5) {
+      dh.header("Settings:");
+      dh.navigationOptions(true, true, true, false);
+      if (subMenu == 1) {
+        dh.mainSmallLine1("Name:");
+        dh.mainSmallLine2(user.name);
+      } else if (subMenu == 2) {
+        dh.mainSmallLine1("Walk Speed:");
+        dh.mainSmallLine2("");
+      } else if (subMenu == 3) {
+        dh.mainSmallLine1("Run Speed:");
+        dh.mainSmallLine2("");
+      }
     }
   };
   void readNextUser() {

@@ -10,7 +10,7 @@
 class DisplayHandler {
 public:
   void setup() {
-    Serial.println("DisplayHandler-setup");
+    Serial.println(F("DisplayHandler-setup"));
     display = new Adafruit_SSD1306(4);          //OLED_RESET=4
     delay(50);
     //Serial.println("display.begin");

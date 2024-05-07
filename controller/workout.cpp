@@ -5,7 +5,7 @@
 class WorkoutHandler {
 public:
   void setup() {
-    Serial.println("WorkoutHandler-setup");
+    Serial.println(F("WorkoutHandler-setup"));
   }
 
   char* getNameById(uint8_t id) {
@@ -17,7 +17,7 @@ public:
   char* getById(uint8_t id) {
     if (id < 25) {
       return get5KTraining(id);
-    } 
+    }
   }
 
 private:
@@ -25,6 +25,7 @@ private:
     char* name = "5KM - week   ";
     if (week < 10) {
       name[11] = (char)(48 + week);
+      name[12] = ' ';
     } else {
       name[11] = (char)(48 + (week / 10));
       if (week % 10 == 0) {

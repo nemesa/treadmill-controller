@@ -6,7 +6,6 @@ public:
     _pinX = pinX;
     _pinY = pinY;
     _pinSW = pinSW;
-    Serial.println("JojoystickHandler-setup");
     pinMode(_pinX, INPUT);
     pinMode(_pinY, INPUT);
     pinMode(_pinSW, INPUT_PULLUP);
@@ -25,7 +24,6 @@ public:
     _isDownReleased = false;
     _x = analogRead(_pinX);
     _y = analogRead(_pinY);
-    //Serial.println("x:"+String(_x)+ " y:"+String(_y));
     if (digitalRead(_pinSW) == 0) {
 
       if (!_isSW) {
@@ -127,7 +125,6 @@ private:
     _isDownReleased = false;
     _isSWReleased = false;
     _isRightReleased = true;
-    Serial.println("RIGHT is released");
   }
   void leftReleased() {
     _isRightReleased = false;
@@ -135,7 +132,6 @@ private:
     _isDownReleased = false;
     _isSWReleased = false;
     _isLeftReleased = true;
-    Serial.println("LEFT is released");
   }
   void upReleased() {
     _isLeftReleased = false;
@@ -143,7 +139,6 @@ private:
     _isDownReleased = false;
     _isSWReleased = false;
     _isUpReleased = true;
-    Serial.println("UP is released");
   }
   void downReleased() {
     _isLeftReleased = false;
@@ -151,7 +146,6 @@ private:
     _isUpReleased = false;
     _isSWReleased = false;
     _isDownReleased = true;
-    Serial.println("DOWN is released");
   }
   void swReleased() {
     _isSW = false;
@@ -161,6 +155,5 @@ private:
     _isUpReleased = false;
     _isDownReleased = false;
     _isSWReleased = true;
-    Serial.println("SW is released");
   }
 };
