@@ -1,4 +1,0 @@
-
-struct WorkoutDataStruct {
-  char* name;
-};

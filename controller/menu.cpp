@@ -99,13 +99,13 @@ private:
     dh.cleanAll();
     dh.navigationOptions(false, true, false, false);
     dh.header("Workout Details:");
-    dh.mainSmallLine1Str(wh.getNameById(id));
+    dh.mainSmallLine1(wh.getNameById(id));
     dh.mainSmallLine2(wh.getById(id));
   }
   void workoutStartLastScreen() {
     subWorkoutScreen = 0;
     dh.mainSmallLine1("Start Workout:");
-    dh.mainSmallLine2Str(wh.getNameById(user.lastSelection));
+    dh.mainSmallLine2(wh.getNameById(user.lastSelection));
   }
   void workoutOtherScreen() {
     subWorkoutScreen = 2;
