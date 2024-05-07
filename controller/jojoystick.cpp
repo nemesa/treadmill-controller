@@ -22,6 +22,7 @@ public:
     _isRightReleased = false;
     _isUpReleased = false;
     _isDownReleased = false;
+    _isSWReleased = false;
     _x = analogRead(_pinX);
     _y = analogRead(_pinY);
     if (digitalRead(_pinSW) == 0) {
@@ -155,5 +156,6 @@ private:
     _isUpReleased = false;
     _isDownReleased = false;
     _isSWReleased = true;
+    //Serial.println(F("swReleased"));
   }
 };
