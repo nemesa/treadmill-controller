@@ -28,7 +28,7 @@ public:
       setMenu(1, subMenu);
     } else if (menu == 4) {
       subMenu = subMenu + 1;
-      if (subMenu == 25) {
+      if (subMenu == 30) {
         subMenu = 1;
       }
       setMenu(4, subMenu);
@@ -47,7 +47,7 @@ public:
     } else if (menu == 4) {
       subMenu = subMenu - 1;
       if (subMenu == 0) {
-        subMenu = 24;
+        subMenu = 29;
       }
       setMenu(4, subMenu);
     }

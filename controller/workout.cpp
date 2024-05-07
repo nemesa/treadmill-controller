@@ -12,12 +12,14 @@ public:
     if (id < 25) {
       return get5KTrainingName(id);
     }
+    return otherName(id);
   }
 
   char* getById(uint8_t id) {
     if (id < 25) {
       return get5KTraining(id);
     }
+    return other(id);
   }
 
 private:
@@ -85,6 +87,39 @@ private:
       result = "5W|[3|14R|2W]|2W";
     } else if (week == 24) {
       result = "5W|18R|2W|10R|4W";
+    } else {
+      result = "";
+    }
+    return result;
+  }
+
+  char* otherName(uint8_t id) {
+    if (id == 25) {
+      return "30 Min Walk";
+    } else if (id == 26) {
+      return "45 Min Walk";
+    } else if (id == 27) {
+      return "1 Hour Walk";
+    } else if (id == 28) {
+      return "1 Hour 15 Min Walk";
+    } else if (id == 29) {
+      return "1 Hour 30 Min Walk";
+    } else {
+      return "INVALID";
+    }
+  }
+  char* other(uint8_t id) {
+    char* result;
+    if (id == 25) {
+      result = "30W";
+    } else if (id == 26) {
+      result = "45W";
+    } else if (id == 27) {
+      result = "60W";
+    } else if (id == 28) {
+      result = "75W";
+    } else if (id == 29) {
+      result = "90W";
     } else {
       result = "";
     }
