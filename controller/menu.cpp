@@ -15,7 +15,7 @@ public:
     setUser(user.num);
 
     //setMenu(0, -1);
-    setMenu(5, 1);
+    setMenu(6, -1);
   }
   void down() {
     if (menu == 0) {
@@ -109,10 +109,14 @@ public:
     if (menu == 0) {
       eh.setLastUser(user.num);
       setMenu(1, 1);
+    } else if (menu == 1 && subMenu == 1) {
+      setMenu(6, -1);
     } else if (menu == 1 && subMenu == 2) {
       setMenu(4, user.lastSelection);
     } else if (menu == 1 && subMenu == 3) {
       setMenu(5, 1);
+    } else if (menu == 3) {
+      setMenu(6, -1);
     } else if (menu == 4) {
       user.lastSelection = subMenu;
       eh.writeUserData(user);
@@ -132,6 +136,8 @@ public:
         eh.writeUserData(user);
         setMenu(5, 3);
       }
+    } else if (menu == 6) {
+      setMenu(1, 1);
     }
   }
 
@@ -194,7 +200,14 @@ private:
         dh.main(getSpeed(user.runSpeed));
       }
     } else if (menu = 6) {
-      dh.main("Workout!");
+      dh.main("12:09");
+      int timers[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      wh.getTimersById(timers, user.lastSelection);
+      for (int i = 0; i < 20; i++) {
+        Serial.print(timers[i]);
+        Serial.print(F(", "));
+      }
+        Serial.println(F(""));
     }
   };
   void readNextUser() {
@@ -236,8 +249,8 @@ private:
     } else {
       if (speed > 100) {
         result[0] = (char)(48 + speed / 100);
-        result[1] = (char)(48 + ((100-speed) / 10));
-        result[3] = (char)(48 + ((100-speed) % 10));
+        result[1] = (char)(48 + ((speed - 100) / 10));
+        result[3] = (char)(48 + ((speed - 100) % 10));
       } else {
         result[1] = (char)(48 + speed / 10);
         result[3] = (char)(48 + speed % 10);

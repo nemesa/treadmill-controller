@@ -5,7 +5,7 @@
 class WorkoutHandler {
 public:
   void setup() {
-    Serial.println(F("WorkoutHandler-setup"));
+    //Serial.println(F("WorkoutHandler-setup"));
   }
 
   char* getNameById(uint8_t id) {
@@ -20,6 +20,76 @@ public:
       return get5KTraining(id);
     }
     return other(id);
+  }
+
+  void getTimersById(int* output, uint8_t id) {
+    char* details = getById(id);
+
+    //Serial.println(details);
+
+    int multiplerItems[] = { 0, 0, 0, 0, 0 };
+    bool inMultiplier = false;
+    uint8_t outIndex = 0;
+    uint8_t multiplerIndex = 0;
+    uint8_t numericCounter = 0;
+    uint8_t multiplier = 0;
+    for (int i = 0; i < strlen(details); i++) {
+      uint8_t charValue = (uint8_t)details[i];
+      if (48 <= charValue && charValue <= 57) {  //between 0 and 9
+        uint8_t numValue = charValue - 48;
+        numericCounter++;
+        if (inMultiplier) {
+          if (numericCounter > 1) {
+            multiplerItems[multiplerIndex] = multiplerItems[multiplerIndex] * 10;
+            multiplerItems[multiplerIndex] += numValue;
+          } else {
+            multiplerItems[multiplerIndex] = numValue;
+          }
+        } else {
+          if (numericCounter > 1) {
+            output[outIndex] = output[outIndex] * 10;
+            output[outIndex] += numValue;
+          } else {
+            output[outIndex] = numValue;
+          }
+        }
+      } else if (charValue == 87) {  // W
+        numericCounter = 0;
+      } else if (charValue == 82) {  // R
+        numericCounter = 0;
+        if (inMultiplier) {
+          multiplerItems[multiplerIndex] = -1 * multiplerItems[multiplerIndex];
+        } else {
+          output[outIndex] = -1 * output[outIndex];
+        }
+      } else if (charValue == 91) {  // [
+        inMultiplier = true;
+        numericCounter = 0;
+      } else if (charValue == 93) {  // ]
+        inMultiplier = false;
+        numericCounter = 0;
+        for (int i = 0; i < multiplerItems[0]; i++) {
+          for (int j = 1; j < 5; j++) {
+            if (multiplerItems[j] != 0) {
+              output[outIndex] = multiplerItems[j];
+              outIndex++;
+            }
+          }
+        }
+        outIndex--;
+
+      } else if (charValue == 124) {  // |
+        if (inMultiplier == true) {
+          multiplerIndex++;
+        } else {
+          outIndex++;
+        }
+        numericCounter = 0;
+      }
+    }
+    for (int i = 0; i < 20; i++) {
+      output[i] = output[i] * 60;
+    }
   }
 
 private:
@@ -64,7 +134,7 @@ private:
     } else if (week == 12) {
       result = "5W|[2|7R|2W]|2W";
     } else if (week == 13) {
-      result = "5W|10R|2W|5E|5W";
+      result = "5W|10R|2W|5R|5W";
     } else if (week == 14) {
       result = "5W|15R|6W";
     } else if (week == 15) {
@@ -78,7 +148,7 @@ private:
     } else if (week == 19) {
       result = "5W|[3|9R|1W]";
     } else if (week == 20) {
-      result = "5W|15R|2W|[2X|5R|2W]";
+      result = "5W|15R|2W|[2|5R|2W]";
     } else if (week == 21) {
       result = "5W|[3|9R|2W]";
     } else if (week == 22) {
