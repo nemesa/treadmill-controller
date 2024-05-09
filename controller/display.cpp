@@ -39,6 +39,13 @@ public:
     display.println(text);
     display.display();
   }
+  void debug2(char* text) {
+    display.setTextSize(1);
+    display.fillRect(0, 0, 10, 8, BLACK);
+    display.setCursor(0, 0);
+    display.println(text);
+    display.display();
+  }
   void header(char* text) {
     display.setTextSize(1);
     display.fillRect(0, 0, 127, 8, BLACK);

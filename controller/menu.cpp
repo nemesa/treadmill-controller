@@ -140,12 +140,24 @@ public:
       setMenu(1, 1);
     }
   }
+  void timerTick() {
+    if (menu == 6) {
+      if (!inTimer) {
+        inTimer = true;
+        Serial.println(F("Timer 1"));
+        dh.debug("12:09");
+        inTimer = false;
+      }
+    }
+  }
 
 private:
   int menu = -1;
   int subMenu = -1;
   uint8_t walkSpeed = -1;
   uint8_t runSpeed = -1;
+  bool inTimer = false;
+  int timeTick = 0;
   void render() {
     /*Serial.print(F("render "));
     Serial.print(menu);
@@ -207,7 +219,7 @@ private:
         Serial.print(timers[i]);
         Serial.print(F(", "));
       }
-        Serial.println(F(""));
+      Serial.println(F(""));
     }
   };
   void readNextUser() {
@@ -234,6 +246,8 @@ private:
     }
     menu = newMenu;
     subMenu = newSubMenu;
+    inTimer = false;
+    timeTick = 0;
     render();
   };
   char* getSpeed(uint8_t speed) {

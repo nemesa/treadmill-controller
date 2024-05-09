@@ -13,8 +13,10 @@
 JojoystickHandler jh;
 MenuHandler mh;
 
+bool inTimer = false;
+
 void setup() {
-/*
+
   cli();  //stop interrupts
 
   TCCR1A = 0;  // set entire TCCR1A register to 0
@@ -30,7 +32,7 @@ void setup() {
   TIMSK1 |= (1 << OCIE1A);
 
   sei();  //allow interrupts
-*/
+
   Serial.begin(115200);
   Serial.println(F("Setup"));
 
@@ -56,12 +58,16 @@ void loop() {
     mh.select();
   }
 
+  if (inTimer) {
+    inTimer = false;
+    mh.timerTick();
+  }
+
   delay(10);
 }
-/*
-ISR(TIMER1_COMPA_vect){//timer1 interrupt 1Hz toggles pin 13 (LED)
-//generates pulse wave of frequency 1Hz/2 = 0.5kHz (takes two cycles for full wave- toggle high then toggle low)
-  
-  Serial.println(F("Timer 1"));
+
+
+ISR(TIMER1_COMPA_vect) {  //timer1 interrupt 1Hz toggles pin 13 (LED)
+                          //generates pulse wave of frequency 1Hz/2 = 0.5kHz (takes two cycles for full wave- toggle high then toggle low)
+  inTimer = true;
 }
-*/
