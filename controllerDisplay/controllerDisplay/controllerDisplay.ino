@@ -81,23 +81,23 @@ void messageRecived(short length, char* message) {
 }
 
 void doCommand(char type, short cLength, char* commandBuffer) {
-  Serial.print(F("doCommand - "));
-  Serial.print(type);
+  //Serial.print(F("doCommand - "));
+  //Serial.print(type);
   if (type == 'C') {
-    Serial.println();
+    //Serial.println();
     dh.cleanAll();
   } else {
-    Serial.print(F(" - "));
-    Serial.print(cLength);
-    Serial.print(F(" - "));
+    // Serial.print(F(" - "));
+    // Serial.print(cLength);
+    // Serial.print(F(" - "));
     char commandMessage[cLength];
     commandMessage[cLength] = 0;  //set the last to hold the required the null termination character
 
     for (short i = 0; i < cLength; i++) {
       commandMessage[i] = commandBuffer[i];
     }
-    Serial.print(commandMessage);
-    Serial.println();
+    // Serial.print(commandMessage);
+    // Serial.println();
 
     if (type == 'H') {
       dh.header(commandMessage);

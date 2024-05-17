@@ -1,5 +1,4 @@
 #include "Arduino.h"
-#include "display.cpp"
 #include "eeprom.cpp"
 #include "workout.cpp"
 #include "softserial.cpp"
@@ -9,7 +8,6 @@ public:
 
   void setup() {
     Serial.println(F("MenuHandler-setup"));
-    dh.setup();
     eh.setup();
     wh.setup();
     ssh.setup();
@@ -23,7 +21,6 @@ public:
   void down() {
     if (menu == 0) {
       readNextUser();
-      //dh.main(user.name);
       ssh.send(false, "M#", user.name, "+");
 
     } else if (menu == 1) {
@@ -49,19 +46,18 @@ public:
       if (walkSpeed == 0) {
         walkSpeed = 1;
       }
-      dh.main(getSpeed(walkSpeed));
+      ssh.send(false, "M#", getSpeed(walkSpeed), "+");
     } else if (menu == 5 && subMenu == 30) {
       runSpeed = runSpeed - 1;
       if (runSpeed == 0) {
         runSpeed = 1;
       }
-      dh.main(getSpeed(runSpeed));
+      ssh.send(false, "M#", getSpeed(runSpeed), "+");
     }
   }
   void up() {
     if (menu == 0) {
       readPrevUser();
-      //dh.main(user.name);
       ssh.send(false, "M#", user.name, "+");
     } else if (menu == 1) {
       subMenu = subMenu - 1;
@@ -86,13 +82,13 @@ public:
       if (walkSpeed == 161) {
         walkSpeed = 160;
       }
-      dh.main(getSpeed(walkSpeed));
+      ssh.send(false, "M#", getSpeed(walkSpeed), "+");
     } else if (menu == 5 && subMenu == 30) {
       runSpeed = runSpeed + 1;
       if (runSpeed == 161) {
         runSpeed = 160;
       }
-      dh.main(getSpeed(runSpeed));
+      ssh.send(false, "M#", getSpeed(runSpeed), "+");
     }
   }
   void left() {
@@ -151,7 +147,6 @@ public:
       if (!inTimer) {
         inTimer = true;
         Serial.println(F("Timer 1"));
-        dh.debug("12:09");
         inTimer = false;
       }
     }
@@ -173,61 +168,31 @@ private:
     if (menu == 0) {
       ssh.send(doCleanAll, "N#TFTF+H#Welcome!+M#", user.name, "+");
     } else if (menu == 1) {
-      //dh.header("Select Workout!");
       if (subMenu == 1) {
-        //dh.navigationOptions(true, true, true, true);
-        //dh.mainSmallLine1("Start Last Selected:");
-        //dh.mainSmallLine2(wh.getNameById(user.lastSelection));
         ssh.send(doCleanAll, "H#Select Workout!+N#TTTT+S#Start Last Selected:+s#", wh.getNameById(user.lastSelection), "+");
       } else if (subMenu == 2) {
-        //dh.navigationOptions(true, true, true, false);
-        //dh.mainSmallLine1("Other Workouts");
-        //dh.mainSmallLine2("");
         ssh.send(doCleanAll, "H#Select Workout!+N#TTTF+S#Other Workouts+s#+");
       } else if (subMenu == 3) {
-        //dh.navigationOptions(true, true, true, false);
-        //dh.mainSmallLine1("User Settings");
-        //dh.mainSmallLine2("");
         ssh.send(doCleanAll, "H#Select Workout!+N#TTTF+S#User Settings+s#+");
       }
     } else if (menu == 3) {
-      // dh.header("Last Workout Details:");
-      // dh.navigationOptions(false, true, false, false);
-      // dh.mainSmallLine1(wh.getNameById(user.lastSelection));
-      // dh.mainSmallLine2(wh.getById(user.lastSelection));
       ssh.send(doCleanAll, "H#Last Workout Details:+N#FTFF+S#", wh.getNameById(user.lastSelection), "+s#", wh.getById(user.lastSelection), "+");
     } else if (menu == 4) {
-      // dh.header("Other workouts:");
-      // dh.navigationOptions(true, true, true, false);
-      // dh.mainSmallLine1(wh.getNameById(subMenu));
-      // dh.mainSmallLine2(wh.getById(subMenu));
       ssh.send(doCleanAll, "H#Other workouts:+N#TTTF+S#", wh.getNameById(subMenu), "+s#", wh.getById(subMenu), "+");
     } else if (menu == 5) {
-      //dh.header("Settings:");
-      //dh.navigationOptions(true, true, true, false);
       if (subMenu == 1) {
-        //dh.mainSmallLine1("Name:");
-        //dh.mainSmallLine2(user.name);
         ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Name:+s#", user.name, "+");
       } else if (subMenu == 2) {
-        //dh.mainSmallLine1("Walk Speed:");
-        //dh.mainSmallLine2(getSpeed(user.walkSpeed));
         ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Walk Speed:+s#", getSpeed(user.walkSpeed), "+");
       } else if (subMenu == 20) {
-        //dh.header("Walk Speed:");
-        //dh.main(getSpeed(user.walkSpeed));
         ssh.send(doCleanAll, "H#Walk Speed:+N#TTTF+M#", getSpeed(user.walkSpeed), "+");
       } else if (subMenu == 3) {
-        //dh.mainSmallLine1("Run Speed:");
-        //dh.mainSmallLine2(getSpeed(user.runSpeed));
         ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Run Speed:+s#", getSpeed(user.runSpeed), "+");
       } else if (subMenu == 30) {
-        //dh.header("Run Speed:");
-        //dh.main(getSpeed(user.runSpeed));
         ssh.send(doCleanAll, "H#Run Speed:+N#TTTF+M#", getSpeed(user.runSpeed), "+");
       }
-    } else if (menu = 6) {
-      dh.main("12:09");
+    } else if (menu = 6) {      
+      ssh.send(doCleanAll, "M#12:09+");
       short timers[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
       wh.getTimersById(timers, user.lastSelection);
       for (uint8_t i = 0; i < 20; i++) {
@@ -294,7 +259,6 @@ private:
     runSpeed = user.runSpeed;
   }
   UserDataStruct user;
-  DisplayHandler dh;
   EEPROMHandler eh;
   WorkoutHandler wh;
   SoftSerialHandler ssh;
