@@ -2,13 +2,15 @@
 //SCL -> A5
 //SDA -> A4
 
+#define jX A0
+#define jY A1
+#define jSW 4
+#define ssTxPin 11
+#define ssRxPin 10
 
 #include "jojoystick.cpp"
 #include "menu.cpp"
 
-#define jX A0
-#define jY A1
-#define jSW 4
 
 JojoystickHandler jh;
 MenuHandler mh;
@@ -37,7 +39,7 @@ void setup() {
   Serial.println(F("Setup"));
 
   jh.setup(jX, jY, jSW);
-  mh.setup();
+  mh.setup(ssRxPin, ssTxPin);
 }
 
 void loop() {

@@ -6,11 +6,11 @@
 class MenuHandler {
 public:
 
-  void setup() {
+  void setup(int ssRx, int ssTx) {
     Serial.println(F("MenuHandler-setup"));
     eh.setup();
     wh.setup();
-    ssh.setup();
+    ssh.setup(ssRx,ssTx);
     user = eh.getLastSelectedUser();
     setUser(user.num);
 

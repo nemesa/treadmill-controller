@@ -7,10 +7,10 @@ class SoftSerialHandler {
 public:
   SoftSerialHandler() {
   }
-  void setup() {
+  void setup(int ssRx, int ssTx) {
     Serial.println(F("SoftSerialHandler-setup"));
+    sserial = SoftwareSerial(ssRx, ssTx);  // receive pin=10, transmit pin=11
     sserial.begin(9600);
-    //sserial = SoftwareSerial(10, 11);  // receive pin=10, transmit pin=11
   }
   void send(bool doClean, char* message) {
     Serial.println(F("SoftSerialHandler-send"));
@@ -98,5 +98,5 @@ public:
   }
 
 private:
-  SoftwareSerial sserial = SoftwareSerial(10, 11);
+  SoftwareSerial sserial = SoftwareSerial(0, 1);
 };
