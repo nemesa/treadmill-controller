@@ -7,6 +7,7 @@
 #define jSW 4
 #define ssTxPin 11
 #define ssRxPin 10
+#define displayReadyPin 8
 
 #include "jojoystick.cpp"
 #include "menu.cpp"
@@ -18,6 +19,7 @@ MenuHandler mh;
 bool inTimer = false;
 
 void setup() {
+  pinMode(displayReadyPin, INPUT);
 
   cli();  //stop interrupts
 
@@ -38,11 +40,19 @@ void setup() {
   Serial.begin(9600);
   Serial.println(F("Setup"));
 
+  if (digitalRead(displayReadyPin) == 0) {
+    while (digitalRead(displayReadyPin) != 1) {
+      delay(100);
+    }
+  }
+
+
   jh.setup(jX, jY, jSW);
   mh.setup(ssRxPin, ssTxPin);
 }
 
 void loop() {
+
   jh.loop();
   if (jh.isDownReleased()) {
     mh.down();

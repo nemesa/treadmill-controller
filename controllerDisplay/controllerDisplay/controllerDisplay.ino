@@ -5,13 +5,18 @@
 
 #include <SoftwareSerial.h>
 
-SoftwareSerial sserial(10, 11);  // receive pin=10, transmit pin=11
+#define ssTxPin 11
+#define ssRxPin 10
+#define readyPin 8
+
+SoftwareSerial sserial(ssRxPin, ssTxPin);  // receive pin=10, transmit pin=11
 #define messageBufferSize 200
 char messageBuffer[messageBufferSize];
 short messageIndex = 0;
 DisplayHandler dh;
 
 void setup() {
+  pinMode(readyPin, OUTPUT);
   Serial.begin(9600);
   sserial.begin(9600);  // start serial connection
   Serial.println(F("setup"));
@@ -19,6 +24,7 @@ void setup() {
   for (short i = 0; i < messageBufferSize; i++) {
     messageBuffer[i] = 0;
   }
+  digitalWrite(readyPin, HIGH);
 }
 
 
