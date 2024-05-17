@@ -3,6 +3,7 @@
 class JojoystickHandler {
 public:
   void setup(uint8_t pinX, uint8_t pinY, uint8_t pinSW) {
+    Serial.println(F("JojoystickHandler-setup"));
     _pinX = pinX;
     _pinY = pinY;
     _pinSW = pinSW;

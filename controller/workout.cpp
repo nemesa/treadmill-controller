@@ -5,7 +5,7 @@
 class WorkoutHandler {
 public:
   void setup() {
-    //Serial.println(F("WorkoutHandler-setup"));
+    Serial.println(F("WorkoutHandler-setup"));
   }
 
   char* getNameById(uint8_t id) {

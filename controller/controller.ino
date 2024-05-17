@@ -33,7 +33,7 @@ void setup() {
 
   sei();  //allow interrupts
 
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println(F("Setup"));
 
   jh.setup(jX, jY, jSW);

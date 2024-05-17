@@ -12,9 +12,10 @@ short messageIndex = 0;
 DisplayHandler dh;
 
 void setup() {
-  dh.setup();
   Serial.begin(9600);
   sserial.begin(9600);  // start serial connection
+  Serial.println(F("setup"));
+  dh.setup();
   for (short i = 0; i < messageBufferSize; i++) {
     messageBuffer[i] = 0;
   }

@@ -8,6 +8,7 @@ class EEPROMHandler {
 public:
 
   void setup() {
+    Serial.println(F("EEPROMHandler-setup"));
     struct UserDataStruct defaultUser;
 
     defaultUser.walkSpeed = 51;
