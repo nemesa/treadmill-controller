@@ -6,7 +6,7 @@
 #include <SoftwareSerial.h>
 
 SoftwareSerial sserial(10, 11);  // receive pin=10, transmit pin=11
-#define messageBufferSize 50
+#define messageBufferSize 200
 char messageBuffer[messageBufferSize];
 short messageIndex = 0;
 DisplayHandler dh;
@@ -39,7 +39,7 @@ void loop() {
             }
             messageBuffer[i] = 0;
           }
-          messageRecived(message);
+          messageRecived(messageIndex, message);
           messageIndex = 0;
         } else {
           messageBuffer[messageIndex] = (char)incomingByte;
@@ -50,9 +50,76 @@ void loop() {
   }
 }
 
-void messageRecived(char* message) {
+void messageRecived(short length, char* message) {
+  Serial.print(length);
+  Serial.print(F("- "));
   Serial.println(message);
-  dh.cleanAll();
-  dh.debug(message);
-  Serial.println("Done receive");
+  char commandType = 0;
+  short commandLength = -1;
+  char commandBuffer[messageBufferSize];
+  bool atCommandSeparator = false;
+
+  for (short i = 0; i < length; i++) {
+    char m = message[i];
+
+    if (m == '+') {
+      doCommand(commandType, commandLength - 1, commandBuffer);
+      commandLength = -1;
+      commandType = "";
+    } else if (m == '#') {
+      commandLength++;
+    } else {
+      if (commandLength == -1) {
+        commandType = m;
+      } else {
+        commandBuffer[commandLength - 1] = m;
+      }
+      commandLength++;
+    }
+  }
+  Serial.println(F("Done receive"));
+}
+
+void doCommand(char type, short cLength, char* commandBuffer) {
+  Serial.print(F("doCommand - "));
+  Serial.print(type);
+  if (type == 'C') {
+    Serial.println();
+    dh.cleanAll();
+  } else {
+    Serial.print(F(" - "));
+    Serial.print(cLength);
+    Serial.print(F(" - "));
+    char commandMessage[cLength];
+    commandMessage[cLength] = 0;  //set the last to hold the required the null termination character
+
+    for (short i = 0; i < cLength; i++) {
+      commandMessage[i] = commandBuffer[i];
+    }
+    Serial.print(commandMessage);
+    Serial.println();
+
+    if (type == 'H') {
+      dh.header(commandMessage);
+    }
+    if (type == 'M') {
+      dh.main(commandMessage);
+    }
+    if (type == 'S') {
+      dh.mainSmallLine1(commandMessage);
+    }
+    if (type == 's') {
+      dh.mainSmallLine2(commandMessage);
+    }
+    if (type == 'M') {
+      dh.main(commandMessage);
+    }
+    if (type == 'N') {
+      dh.navigationOptions(
+        commandMessage[0] == 'T',
+        commandMessage[1] == 'T',
+        commandMessage[2] == 'T',
+        commandMessage[3] == 'T');
+    }
+  }
 }

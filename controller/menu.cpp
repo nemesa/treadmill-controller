@@ -2,6 +2,7 @@
 #include "display.cpp"
 #include "eeprom.cpp"
 #include "workout.cpp"
+#include "softserial.cpp"
 
 class MenuHandler {
 public:
@@ -11,16 +12,20 @@ public:
     dh.setup();
     eh.setup();
     wh.setup();
+    ssh.setup();
     user = eh.getLastSelectedUser();
     setUser(user.num);
 
-    setMenu(0, -1);
+    //setMenu(0, -1);
+    setMenu(1, 1);
     //setMenu(6, -1);
   }
   void down() {
     if (menu == 0) {
       readNextUser();
-      dh.main(user.name);
+      //dh.main(user.name);
+      ssh.send(false, "M#", user.name, "+");
+
     } else if (menu == 1) {
       subMenu = subMenu + 1;
       if (subMenu == 4) {
@@ -56,7 +61,8 @@ public:
   void up() {
     if (menu == 0) {
       readPrevUser();
-      dh.main(user.name);
+      //dh.main(user.name);
+      ssh.send(false, "M#", user.name, "+");
     } else if (menu == 1) {
       subMenu = subMenu - 1;
       if (subMenu == 0) {
@@ -158,58 +164,67 @@ private:
   uint8_t runSpeed = -1;
   bool inTimer = false;
   short timeTick = 0;
-  void render() {
-    /*Serial.print(F("render "));
+  void render(bool doCleanAll) {
+
+    Serial.print(F("render "));
     Serial.print(menu);
     Serial.print(F(" "));
-    Serial.println(subMenu);*/
+    Serial.println(subMenu);
     if (menu == 0) {
-      dh.navigationOptions(true, false, true, false);
-      dh.header("Welcome!");
-      dh.main(user.name);
+      ssh.send(doCleanAll, "N#TFTF+H#Welcome!+M#", user.name, "+");
     } else if (menu == 1) {
-      dh.header("Select Workout!");
+      //dh.header("Select Workout!");
       if (subMenu == 1) {
-        dh.navigationOptions(true, true, true, true);
-        dh.mainSmallLine1("Start Last Selected:");
-        dh.mainSmallLine2(wh.getNameById(user.lastSelection));
+        //dh.navigationOptions(true, true, true, true);
+        //dh.mainSmallLine1("Start Last Selected:");
+        //dh.mainSmallLine2(wh.getNameById(user.lastSelection));
+        ssh.send(doCleanAll, "H#Select Workout!+N#TTTT+S#Start Last Selected:+s#", wh.getNameById(user.lastSelection), "+");
       } else if (subMenu == 2) {
-        dh.navigationOptions(true, true, true, false);
-        dh.mainSmallLine1("Other Workouts");
-        dh.mainSmallLine2("");
+        //dh.navigationOptions(true, true, true, false);
+        //dh.mainSmallLine1("Other Workouts");
+        //dh.mainSmallLine2("");
+        ssh.send(doCleanAll, "H#Select Workout!+N#TTTF+S#Other Workouts+s#+");
       } else if (subMenu == 3) {
-        dh.navigationOptions(true, true, true, false);
-        dh.mainSmallLine1("User Settings");
-        dh.mainSmallLine2("");
+        //dh.navigationOptions(true, true, true, false);
+        //dh.mainSmallLine1("User Settings");
+        //dh.mainSmallLine2("");
+        ssh.send(doCleanAll, "H#Select Workout!+N#TTTF+S#User Settings+s#+");
       }
     } else if (menu == 3) {
-      dh.header("Last Workout Details:");
-      dh.navigationOptions(false, true, false, false);
-      dh.mainSmallLine1(wh.getNameById(user.lastSelection));
-      dh.mainSmallLine2(wh.getById(user.lastSelection));
+      // dh.header("Last Workout Details:");
+      // dh.navigationOptions(false, true, false, false);
+      // dh.mainSmallLine1(wh.getNameById(user.lastSelection));
+      // dh.mainSmallLine2(wh.getById(user.lastSelection));
+      ssh.send(doCleanAll, "H#Last Workout Details:+N#FTFF+S#", wh.getNameById(user.lastSelection), "+s#", wh.getById(user.lastSelection), "+");
     } else if (menu == 4) {
-      dh.header("Other workouts:");
-      dh.navigationOptions(true, true, true, false);
-      dh.mainSmallLine1(wh.getNameById(subMenu));
-      dh.mainSmallLine2(wh.getById(subMenu));
+      // dh.header("Other workouts:");
+      // dh.navigationOptions(true, true, true, false);
+      // dh.mainSmallLine1(wh.getNameById(subMenu));
+      // dh.mainSmallLine2(wh.getById(subMenu));
+      ssh.send(doCleanAll, "H#Other workouts:+N#TTTF+S#", wh.getNameById(subMenu), "+s#", wh.getById(subMenu), "+");
     } else if (menu == 5) {
-      dh.header("Settings:");
-      dh.navigationOptions(true, true, true, false);
+      //dh.header("Settings:");
+      //dh.navigationOptions(true, true, true, false);
       if (subMenu == 1) {
-        dh.mainSmallLine1("Name:");
-        dh.mainSmallLine2(user.name);
+        //dh.mainSmallLine1("Name:");
+        //dh.mainSmallLine2(user.name);
+        ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Name:+s#", user.name, "+");
       } else if (subMenu == 2) {
-        dh.mainSmallLine1("Walk Speed:");
-        dh.mainSmallLine2(getSpeed(user.walkSpeed));
+        //dh.mainSmallLine1("Walk Speed:");
+        //dh.mainSmallLine2(getSpeed(user.walkSpeed));
+        ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Walk Speed:+s#", getSpeed(user.walkSpeed), "+");
       } else if (subMenu == 20) {
-        dh.header("Walk Speed:");
-        dh.main(getSpeed(user.walkSpeed));
+        //dh.header("Walk Speed:");
+        //dh.main(getSpeed(user.walkSpeed));
+        ssh.send(doCleanAll, "H#Walk Speed:+N#TTTF+M#", getSpeed(user.walkSpeed), "+");
       } else if (subMenu == 3) {
-        dh.mainSmallLine1("Run Speed:");
-        dh.mainSmallLine2(getSpeed(user.runSpeed));
+        //dh.mainSmallLine1("Run Speed:");
+        //dh.mainSmallLine2(getSpeed(user.runSpeed));
+        ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Run Speed:+s#", getSpeed(user.runSpeed), "+");
       } else if (subMenu == 30) {
-        dh.header("Run Speed:");
-        dh.main(getSpeed(user.runSpeed));
+        //dh.header("Run Speed:");
+        //dh.main(getSpeed(user.runSpeed));
+        ssh.send(doCleanAll, "H#Run Speed:+N#TTTF+M#", getSpeed(user.runSpeed), "+");
       }
     } else if (menu = 6) {
       dh.main("12:09");
@@ -237,18 +252,19 @@ private:
     setUser(num);
   }
   void setMenu(int newMenu, int newSubMenu) {
-    /*Serial.print(F("setMenu "));
+    Serial.print(F("setMenu "));
     Serial.print(newMenu);
     Serial.print(F(" "));
-    Serial.println(newSubMenu);*/
+    Serial.println(newSubMenu);
+    bool doClear = false;
     if (menu != newMenu) {
-      dh.cleanAll();
+      doClear = true;
     }
     menu = newMenu;
     subMenu = newSubMenu;
     inTimer = false;
     timeTick = 0;
-    render();
+    render(doClear);
   };
   char* getSpeed(uint8_t speed) {
     Serial.print(F("getSpeed "));
@@ -281,6 +297,7 @@ private:
   DisplayHandler dh;
   EEPROMHandler eh;
   WorkoutHandler wh;
+  SoftSerialHandler ssh;
   //short workoutTimers[13] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  short workoutTimers[20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  short workoutTimers[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 };

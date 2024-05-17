@@ -29,6 +29,7 @@ public:
     display.display();
   }
   void cleanAll() {
+    Serial.println(F("DisplayHandler-cleanAll"));
     display.fillRect(0, 0, 127, 31, BLACK);
     display.display();
   }
