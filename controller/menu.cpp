@@ -14,8 +14,8 @@ public:
     user = eh.getLastSelectedUser();
     setUser(user.num);
 
-    //setMenu(0, -1);
-    setMenu(6, -1);
+    setMenu(0, -1);
+    //setMenu(6, -1);
   }
   void down() {
     if (menu == 0) {
@@ -152,12 +152,12 @@ public:
   }
 
 private:
-  int menu = -1;
-  int subMenu = -1;
+  uint8_t menu = -1;
+  uint8_t subMenu = -1;
   uint8_t walkSpeed = -1;
   uint8_t runSpeed = -1;
   bool inTimer = false;
-  int timeTick = 0;
+  short timeTick = 0;
   void render() {
     /*Serial.print(F("render "));
     Serial.print(menu);
@@ -213,9 +213,9 @@ private:
       }
     } else if (menu = 6) {
       dh.main("12:09");
-      int timers[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      short timers[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
       wh.getTimersById(timers, user.lastSelection);
-      for (int i = 0; i < 20; i++) {
+      for (uint8_t i = 0; i < 20; i++) {
         Serial.print(timers[i]);
         Serial.print(F(", "));
       }
@@ -281,4 +281,6 @@ private:
   DisplayHandler dh;
   EEPROMHandler eh;
   WorkoutHandler wh;
+  //short workoutTimers[13] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  short workoutTimers[20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 };
