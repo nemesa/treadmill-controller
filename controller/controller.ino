@@ -16,13 +16,13 @@
 #define relayPin6 5
 
 
-#include "jojoystick.cpp"
+#include "joystick.h"
 #include "menu.cpp"
 #include "relay.h"
 #include "eeprom.h"
 #include "softserial.h"
 
-JojoystickHandler jh;
+JoystickHandler jh(jX, jY, jSW);
 MenuHandler mh;
 RelayHandler rh(relayPin1, relayPin2, relayPin3, relayPin4, relayPin5, relayPin6);
 EEPROMHandler eh;
@@ -60,9 +60,9 @@ void setup() {
 
   rh.setup();
   eh.setup();
-  jh.setup(jX, jY, jSW);
+  jh.setup();
   ssh.setup();
-  
+
   mh.setup(&eh, &rh, &ssh, ssRxPin, ssTxPin);
 }
 
