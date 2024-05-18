@@ -8,6 +8,13 @@
 #define ssTxPin 13
 #define ssRxPin 12
 #define displayReadyPin 11
+#define relayPin1 10
+#define relayPin2 9
+#define relayPin3 8
+#define relayPin4 7
+#define relayPin5 6
+#define relayPin6 5
+
 
 #include "jojoystick.cpp"
 #include "menu.cpp"
@@ -15,7 +22,7 @@
 
 JojoystickHandler jh;
 MenuHandler mh;
-RelayHandler rh(10);
+RelayHandler rh(relayPin1, relayPin2, relayPin3, relayPin4, relayPin5, relayPin6);
 
 bool inTimer = false;
 
