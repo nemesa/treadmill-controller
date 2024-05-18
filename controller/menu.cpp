@@ -10,13 +10,13 @@ public:
     Serial.println(F("MenuHandler-setup"));
     eh.setup();
     wh.setup();
-    ssh.setup(ssRx,ssTx);
+    ssh.setup(ssRx, ssTx);
     user = eh.getLastSelectedUser();
     setUser(user.num);
 
     //setMenu(0, -1);
     setMenu(1, 1);
-    //setMenu(6, -1);
+    //setMenu(6, 1);
   }
   void down() {
     if (menu == 0) {
@@ -100,6 +100,8 @@ public:
       setMenu(1, 2);
     } else if (menu == 5) {
       setMenu(1, 3);
+    } else if (menu == 6 && subMenu == 3) {
+      setMenu(1, 1);
     }
   }
   void right() {
@@ -112,17 +114,17 @@ public:
       eh.setLastUser(user.num);
       setMenu(1, 1);
     } else if (menu == 1 && subMenu == 1) {
-      setMenu(6, -1);
+      setMenu(6, 1);
     } else if (menu == 1 && subMenu == 2) {
       setMenu(4, user.lastSelection);
     } else if (menu == 1 && subMenu == 3) {
       setMenu(5, 1);
     } else if (menu == 3) {
-      setMenu(6, -1);
+      setMenu(6, 1);
     } else if (menu == 4) {
       user.lastSelection = subMenu;
       eh.writeUserData(user);
-      setMenu(6, -1);
+      setMenu(6, 1);
     } else if (menu == 5) {
       if (subMenu == 1) {
       } else if (subMenu == 2) {
@@ -138,15 +140,61 @@ public:
         eh.writeUserData(user);
         setMenu(5, 3);
       }
-    } else if (menu == 6) {
+    } else if (menu == 6 && subMenu == 1) {
+      setMenu(6, 2);
+    } else if (menu == 6 && subMenu == 2) {
+      setMenu(6, 3);
+    } else if (menu == 6 && subMenu == 3) {
+      setMenu(6, 2);
+    } else if (menu == 6 && subMenu == 4) {
       setMenu(1, 1);
     }
   }
   void timerTick() {
-    if (menu == 6) {
+    if (menu == 6 && subMenu == 2) {
       if (!inTimer) {
+        Serial.print(F("timeTick-"));
+        Serial.print(timeTick);
+        Serial.print(F(" - hWS: "));
+        Serial.println(hasWorkoutStarted ? F("T") : F("F"));
         inTimer = true;
-        Serial.println(F("Timer 1"));
+        if (hasWorkoutStarted) {
+
+          ssh.send(false, "M#", getTime(workoutSection, timeTick), "+");
+
+          short currentTarget = workoutTimers[workoutSection];
+          if (isRunningInSection(workoutSection)) {
+            currentTarget = currentTarget * -1;
+          }
+
+          if (currentTarget == 10 || currentTarget == 9) {
+            ssh.send(false, "H#", getTime(workoutSection + 1, 0), "+");
+          }
+          if (currentTarget <= 0) {
+            workoutSection++;
+            if (workoutTimers[workoutSection] == 0) {
+              setMenu(6, 4);
+            }
+          }
+
+          timeTick++;
+        } else {
+          if (startTimeTick < 6) {
+            char num[2] = { 0, 0 };
+            short t = 5 - startTimeTick;
+            num[0] = (char)(48 + t);
+            Serial.println(num[0]);
+
+            if (startTimeTick == 5) {
+              ssh.send(false, "H#", getTime(workoutSection, 0), "+M#", num, "+");
+              hasWorkoutStarted = true;
+              timeTick++;
+            } else {
+              ssh.send(false, "M#", num, "+");
+            }
+          }
+          startTimeTick++;
+        }
         inTimer = false;
       }
     }
@@ -158,7 +206,10 @@ private:
   uint8_t walkSpeed = -1;
   uint8_t runSpeed = -1;
   bool inTimer = false;
-  short timeTick = 0;
+  int timeTick = 0;
+  bool hasWorkoutStarted = false;
+  short startTimeTick = 0;
+  short workoutSection = 0;
   void render(bool doCleanAll) {
 
     Serial.print(F("render "));
@@ -191,15 +242,38 @@ private:
       } else if (subMenu == 30) {
         ssh.send(doCleanAll, "H#Run Speed:+N#TTTF+M#", getSpeed(user.runSpeed), "+");
       }
-    } else if (menu = 6) {      
-      ssh.send(doCleanAll, "M#12:09+");
-      short timers[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-      wh.getTimersById(timers, user.lastSelection);
-      for (uint8_t i = 0; i < 20; i++) {
-        Serial.print(timers[i]);
-        Serial.print(F(", "));
+    } else if (menu = 6) {
+      if (subMenu == 1) {
+        hasWorkoutStarted = false;
+        timeTick = 0;
+        workoutSection = 0;
+        ssh.send(doCleanAll, "H#", wh.getNameById(user.lastSelection), "+M#START+");
+        for (uint8_t i = 0; i < 20; i++) {
+          workoutTimers[i] = 0;
+        }
+
+        wh.getTimersById(workoutTimers, user.lastSelection);
+        for (uint8_t i = 0; i < 20; i++) {
+          Serial.print(workoutTimers[i]);
+          Serial.print(F(", "));
+        }
+        Serial.println(F(""));
       }
-      Serial.println(F(""));
+      if (subMenu == 2) {
+        hasWorkoutStarted = false;
+        startTimeTick = 0;
+        ssh.send(doCleanAll, "H#starting...+");
+      }
+      if (subMenu == 3) {
+        hasWorkoutStarted = false;
+        startTimeTick = 0;
+        ssh.send(doCleanAll, "H#Paused+N#FTFFM#START+");
+      }
+      if (subMenu == 4) {
+        hasWorkoutStarted = false;
+        startTimeTick = 0;
+        ssh.send(doCleanAll, "H#Finished!+M#EXIT+");
+      }
     }
   };
   void readNextUser() {
@@ -216,7 +290,7 @@ private:
     }
     setUser(num);
   }
-  void setMenu(int newMenu, int newSubMenu) {
+  void setMenu(short newMenu, short newSubMenu) {
     Serial.print(F("setMenu "));
     Serial.print(newMenu);
     Serial.print(F(" "));
@@ -228,7 +302,6 @@ private:
     menu = newMenu;
     subMenu = newSubMenu;
     inTimer = false;
-    timeTick = 0;
     render(doClear);
   };
   char* getSpeed(uint8_t speed) {
@@ -253,6 +326,73 @@ private:
     }
     return result;
   }
+  char* getTime(short workoutSection, short ticks) {
+
+    char* result = "X: 00:00";
+
+    short currentTarget = workoutTimers[workoutSection];
+    bool isRunning = isRunningInSection(workoutSection);
+    if (isRunning) {
+      result[0] = (char)82;  //R
+      currentTarget = currentTarget * -1;
+    } else {
+      result[0] = (char)87;  //W
+    }
+
+    short timeLeft = currentTarget - ticks;
+
+    if (timeLeft > 60) {
+      short mins = timeLeft / 60;
+      short sec = timeLeft % 60;
+
+      if (mins > 9) {
+        result[3] = (char)(48 + mins / 10);
+        result[4] = (char)(48 + mins % 10);
+      } else {
+        result[3] = (char)48;
+        result[4] = (char)(48 + mins);
+      }
+
+      if (sec > 9) {
+        result[6] = (char)(48 + sec / 10);
+        result[7] = (char)(48 + sec % 10);
+      } else {
+        result[6] = (char)48;
+        result[7] = (char)(48 + sec);
+      }
+
+    } else if (timeLeft == 60) {
+      result[3] = (char)48;  //0
+      result[4] = (char)49;  //1
+      result[6] = (char)48;  //0
+      result[7] = (char)48;  //0
+
+    } else {
+      result[4] = (char)48;  //0
+      if (timeLeft > 9) {
+        result[6] = (char)(48 + timeLeft / 10);
+        result[7] = (char)(48 + timeLeft % 10);
+      } else {
+        result[6] = (char)48;
+        result[7] = (char)(48 + timeLeft);
+      }
+    }
+
+    Serial.print(F("getTime "));
+    Serial.println(ticks);
+
+
+
+
+    return result;
+  }
+  bool isRunningInSection(short workoutSection) {
+    short currentTarget = workoutTimers[workoutSection];
+    if (currentTarget > 0) {
+      return false;
+    }
+    return true;
+  }
   void setUser(uint8_t num) {
     user = eh.readUser(num);
     walkSpeed = user.walkSpeed;
@@ -262,6 +402,5 @@ private:
   EEPROMHandler eh;
   WorkoutHandler wh;
   SoftSerialHandler ssh;
-  //short workoutTimers[13] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   short workoutTimers[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 };
