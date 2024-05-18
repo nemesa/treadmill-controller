@@ -112,7 +112,8 @@ private:
   char* get5KTraining(uint8_t week) {
     char* result;
     if (week == 1 || week == 2) {
-      result = "2W|[5|1R|1W]";
+      result = "1W|[2|1R|1W]";
+      //result = "2W|[5|1R|1W]";
     } else if (week == 3 || week == 4) {
       result = "2W|[8|1R|1W]|1W";
     } else if (week == 4) {

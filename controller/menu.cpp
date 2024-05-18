@@ -158,20 +158,26 @@ public:
         Serial.print(F(" - hWS: "));
         Serial.println(hasWorkoutStarted ? F("T") : F("F"));
         inTimer = true;
+
+
         if (hasWorkoutStarted) {
 
-          ssh.send(false, "M#", getTime(workoutSection, timeTick), "+");
+          char* timeToShow = "X: 00:00";
+          getTime(timeToShow, workoutSection, timeTick);
+          ssh.send(false, "M#", timeToShow, "+");
 
           short currentTarget = workoutTimers[workoutSection];
           if (isRunningInSection(workoutSection)) {
             currentTarget = currentTarget * -1;
           }
+          short timeLeft = currentTarget - timeTick;
 
-          if (currentTarget == 10 || currentTarget == 9) {
-            ssh.send(false, "H#", getTime(workoutSection + 1, 0), "+");
-          }
-          if (currentTarget <= 0) {
+          Serial.print(F("timeLeft-"));
+          Serial.println(timeLeft);
+          if (timeLeft <= 0) {
+            timeTick = -1;
             workoutSection++;
+            ssh.send(false, "H#", getWorkoutHeader(workoutSection), "+");
             if (workoutTimers[workoutSection] == 0) {
               setMenu(6, 4);
             }
@@ -186,15 +192,17 @@ public:
             Serial.println(num[0]);
 
             if (startTimeTick == 5) {
-              ssh.send(false, "H#", getTime(workoutSection, 0), "+M#", num, "+");
+              char* timeToShowAtStart = "Y: 00:00";
+              getTime(timeToShowAtStart, workoutSection, 0);              
+              ssh.send(false, "H#", getWorkoutHeader(workoutSection), "+M#", timeToShowAtStart, "+");
               hasWorkoutStarted = true;
-              timeTick++;
             } else {
               ssh.send(false, "M#", num, "+");
             }
           }
           startTimeTick++;
         }
+
         inTimer = false;
       }
     }
@@ -326,64 +334,99 @@ private:
     }
     return result;
   }
-  char* getTime(short workoutSection, short ticks) {
-
-    char* result = "X: 00:00";
-
+  void getTime(char* result, short workoutSection, short ticks) {
     short currentTarget = workoutTimers[workoutSection];
-    bool isRunning = isRunningInSection(workoutSection);
-    if (isRunning) {
-      result[0] = (char)82;  //R
-      currentTarget = currentTarget * -1;
+    /*Serial.print(F("getTime ws:"));
+    Serial.print(workoutSection);
+    Serial.print(F(" target: "));
+    Serial.print(currentTarget);
+    Serial.print(F(" tick: "));
+    Serial.println(ticks);*/
+
+    if (currentTarget == 0) {
+      result[0] = (char)32;  //SPACE
+      result[1] = (char)32;  //SPACE
+      result[2] = (char)69;  //E
+      result[3] = (char)78;  //N
+      result[4] = (char)68;  //D
+      result[5] = (char)32;  //SPACE
+      result[6] = (char)32;  //SPACE
+      result[7] = (char)32;  //SPACE
     } else {
-      result[0] = (char)87;  //W
-    }
 
-    short timeLeft = currentTarget - ticks;
-
-    if (timeLeft > 60) {
-      short mins = timeLeft / 60;
-      short sec = timeLeft % 60;
-
-      if (mins > 9) {
-        result[3] = (char)(48 + mins / 10);
-        result[4] = (char)(48 + mins % 10);
-      } else {
-        result[3] = (char)48;
-        result[4] = (char)(48 + mins);
-      }
-
-      if (sec > 9) {
-        result[6] = (char)(48 + sec / 10);
-        result[7] = (char)(48 + sec % 10);
-      } else {
-        result[6] = (char)48;
-        result[7] = (char)(48 + sec);
-      }
-
-    } else if (timeLeft == 60) {
+      result[0] = (char)88;  //X
+      result[1] = (char)58;  //:
+      result[2] = (char)32;  //SPACE
       result[3] = (char)48;  //0
-      result[4] = (char)49;  //1
+      result[4] = (char)48;  //0
+      result[5] = (char)58;  //:
       result[6] = (char)48;  //0
       result[7] = (char)48;  //0
 
-    } else {
-      result[4] = (char)48;  //0
-      if (timeLeft > 9) {
-        result[6] = (char)(48 + timeLeft / 10);
-        result[7] = (char)(48 + timeLeft % 10);
+      bool isRunning = isRunningInSection(workoutSection);
+      if (isRunning) {
+        result[0] = (char)82;  //R
+        currentTarget = currentTarget * -1;
       } else {
-        result[6] = (char)48;
-        result[7] = (char)(48 + timeLeft);
+        result[0] = (char)87;  //W
+      }
+
+      short timeLeft = currentTarget - ticks;
+
+      if (timeLeft > 60) {
+        short mins = timeLeft / 60;
+        short sec = timeLeft % 60;
+
+        if (mins > 9) {
+          result[3] = (char)(48 + mins / 10);
+          result[4] = (char)(48 + mins % 10);
+        } else {
+          result[3] = (char)48;
+          result[4] = (char)(48 + mins);
+        }
+
+        if (sec > 9) {
+          result[6] = (char)(48 + sec / 10);
+          result[7] = (char)(48 + sec % 10);
+        } else {
+          result[6] = (char)48;
+          result[7] = (char)(48 + sec);
+        }
+
+      } else if (timeLeft == 60) {
+        result[3] = (char)48;  //0
+        result[4] = (char)49;  //1
+        result[6] = (char)48;  //0
+        result[7] = (char)48;  //0
+
+      } else {
+        result[4] = (char)48;  //0
+        if (timeLeft > 9) {
+          result[6] = (char)(48 + timeLeft / 10);
+          result[7] = (char)(48 + timeLeft % 10);
+        } else {
+          result[6] = (char)48;
+          result[7] = (char)(48 + timeLeft);
+        }
       }
     }
-
-    Serial.print(F("getTime "));
-    Serial.println(ticks);
-
-
-
-
+    // char(*p)[9];
+    // p = &result;
+    // return p;
+    return result;
+  }
+  char* getWorkoutHeader(short workoutSection) {
+    char* result = "X: 00:00 -> X: 00:00";
+    char* current = "X: 00:00";
+    getTime(current, workoutSection, 0);
+    for (int i = 0; i < 8; i++) {
+      result[i] = current[i];
+    }
+    char* next = "X: 00:00";
+    getTime(next, workoutSection + 1, 0);
+    for (int j = 0; j < 8; j++) {
+      result[(12 + j)] = next[j];
+    }
     return result;
   }
   bool isRunningInSection(short workoutSection) {

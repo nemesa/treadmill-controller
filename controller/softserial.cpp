@@ -13,8 +13,8 @@ public:
     sserial.begin(9600);
   }
   void send(bool doClean, char* message) {
-    Serial.println(F("SoftSerialHandler-send"));
-    Serial.println(message);
+    /*Serial.println(F("SoftSerialHandler-send"));
+    Serial.println(message);*/
 
     sserial.write("&");
     if (doClean) {
@@ -25,9 +25,9 @@ public:
   }
 
   void send(bool doClean, char* messageA, char* messageB) {
-    Serial.println(F("SoftSerialHandler-sendMultiple"));
+    /*Serial.println(F("SoftSerialHandler-sendMultiple(2)"));
     Serial.print(messageA);
-    Serial.println(messageB);
+    Serial.println(messageB);*/
 
     sserial.write("&");
     if (doClean) {
@@ -40,10 +40,10 @@ public:
   }
 
   void send(bool doClean, char* messageA, char* messageB, char* messageC) {
-    Serial.println(F("SoftSerialHandler-sendMultiple"));
+    /*Serial.println(F("SoftSerialHandler-sendMultiple(3)"));
     Serial.print(messageA);
     Serial.print(messageB);
-    Serial.println(messageC);
+    Serial.println(messageC);*/
 
     sserial.write("&");
     if (doClean) {
@@ -58,11 +58,11 @@ public:
 
 
   void send(bool doClean, char* messageA, char* messageB, char* messageC, char* messageD) {
-    Serial.println(F("SoftSerialHandler-sendMultiple"));
+    /*Serial.println(F("SoftSerialHandler-sendMultiple(4)"));
     Serial.print(messageA);
     Serial.print(messageB);
     Serial.print(messageC);
-    Serial.println(messageD);
+    Serial.println(messageD);*/
 
     sserial.write("&");
     if (doClean) {
@@ -77,12 +77,12 @@ public:
   }
 
   void send(bool doClean, char* messageA, char* messageB, char* messageC, char* messageD, char* messageE) {
-    Serial.println(F("SoftSerialHandler-sendMultiple"));
+    /*Serial.println(F("SoftSerialHandler-sendMultiple(5)"));
     Serial.print(messageA);
     Serial.print(messageB);
     Serial.print(messageC);
     Serial.print(messageD);
-    Serial.println(messageE);
+    Serial.println(messageE);*/
 
     sserial.write("&");
     if (doClean) {
