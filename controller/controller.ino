@@ -20,11 +20,13 @@
 #include "menu.cpp"
 #include "relay.h"
 #include "eeprom.h"
+#include "softserial.h"
 
 JojoystickHandler jh;
 MenuHandler mh;
 RelayHandler rh(relayPin1, relayPin2, relayPin3, relayPin4, relayPin5, relayPin6);
 EEPROMHandler eh;
+SoftSerialHandler ssh(ssRxPin, ssTxPin);
 
 bool inTimer = false;
 
@@ -59,7 +61,9 @@ void setup() {
   rh.setup();
   eh.setup();
   jh.setup(jX, jY, jSW);
-  mh.setup(&eh, &rh, ssRxPin, ssTxPin);
+  ssh.setup();
+  
+  mh.setup(&eh, &rh, &ssh, ssRxPin, ssTxPin);
 }
 
 void loop() {

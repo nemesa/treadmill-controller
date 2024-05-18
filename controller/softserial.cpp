@@ -1,96 +1,94 @@
 #include <SoftwareSerial.h>
 #include "Arduino.h"
+#include "softserial.h"
 
-#define ELEMENTS(x) (sizeof(x) / sizeof(x[0]))
+SoftSerialHandler::SoftSerialHandler(short ssRx, short ssTx) {
+  _ssRx = ssRx;
+  _ssTx = ssTx;
+}
 
-class SoftSerialHandler {
-public:
-  SoftSerialHandler() {
+void SoftSerialHandler::setup() {
+  Serial.println(F("SoftSerialHandler-setup"));
+  sserial = SoftwareSerial(_ssRx, _ssTx);
+  sserial.begin(9600);
+}
+
+void SoftSerialHandler::sendMain(bool doClean, char* messages) {
+  sserial.write("&");
+  if (doClean) {
+    sserial.write("C+");
   }
-  void setup(int ssRx, int ssTx) {
-    Serial.println(F("SoftSerialHandler-setup"));
-    sserial = SoftwareSerial(ssRx, ssTx);  // receive pin=10, transmit pin=11
-    sserial.begin(9600);
+  sserial.write("M#");
+  sserial.write(messages);
+  sserial.write("+");
+  sserial.write("$");
+}
+
+void SoftSerialHandler::sendHeader(bool doClean, char* messages) {
+  sserial.write("&");
+  if (doClean) {
+    sserial.write("C+");
   }
+  sserial.write("H#");
+  sserial.write(messages);
+  sserial.write("+");
+  sserial.write("$");
+}
 
-  void sendMain(bool doClean, char* messages) {
-    sserial.write("&");
-    if (doClean) {
-      sserial.write("C+");
-    }
-    sserial.write("M#");
-    sserial.write(messages);
-    sserial.write("+");
-    sserial.write("$");
+void SoftSerialHandler::sendHeaderWithMain(bool doClean, char* headerMessage, char* mainMessage) {
+  sserial.write("&");
+  if (doClean) {
+    sserial.write("C+");
   }
-  void sendHeader(bool doClean, char* messages) {
-    sserial.write("&");
-    if (doClean) {
-      sserial.write("C+");
-    }
-    sserial.write("H#");
-    sserial.write(messages);
-    sserial.write("+");
-    sserial.write("$");
+  sserial.write("H#");
+  sserial.write(headerMessage);
+  sserial.write("+");
+  sserial.write("M#");
+  sserial.write(mainMessage);
+  sserial.write("+");
+  sserial.write("$");
+}
+
+void SoftSerialHandler::sendHeaderNavigationWithMain(bool doClean, char* headerMessage, char* nav, char* mainMessage) {
+  sserial.write("&");
+  if (doClean) {
+    sserial.write("C+");
   }
+  sserial.write("H#");
+  sserial.write(headerMessage);
+  sserial.write("+");
 
-  void sendHeaderWithMain(bool doClean, char* headerMessage, char* mainMessage) {
-    sserial.write("&");
-    if (doClean) {
-      sserial.write("C+");
-    }
-    sserial.write("H#");
-    sserial.write(headerMessage);
-    sserial.write("+");
-    sserial.write("M#");
-    sserial.write(mainMessage);
-    sserial.write("+");
-    sserial.write("$");
+  sserial.write("N#");
+  sserial.write(nav);
+  sserial.write("+");
+
+  sserial.write("M#");
+  sserial.write(mainMessage);
+  sserial.write("+");
+
+  sserial.write("$");
+}
+
+void SoftSerialHandler::sendHeaderNavigationSmallLines(bool doClean, char* headerMessage, char* nav, char* sl1, char* sl2) {
+  sserial.write("&");
+  if (doClean) {
+    sserial.write("C+");
   }
-  void sendHeaderNavigationWithMain(bool doClean, char* headerMessage, char* nav, char* mainMessage) {
-    sserial.write("&");
-    if (doClean) {
-      sserial.write("C+");
-    }
-    sserial.write("H#");
-    sserial.write(headerMessage);
-    sserial.write("+");
+  sserial.write("H#");
+  sserial.write(headerMessage);
+  sserial.write("+");
 
-    sserial.write("N#");
-    sserial.write(nav);
-    sserial.write("+");
+  sserial.write("N#");
+  sserial.write(nav);
+  sserial.write("+");
 
-    sserial.write("M#");
-    sserial.write(mainMessage);
-    sserial.write("+");
+  sserial.write("S#");
+  sserial.write(sl1);
+  sserial.write("+");
 
-    sserial.write("$");
-  }
+  sserial.write("s#");
+  sserial.write(sl2);
+  sserial.write("+");
 
-  void sendHeaderNavigationSmallLines(bool doClean, char* headerMessage, char* nav, char* sl1, char* sl2) {
-    sserial.write("&");
-    if (doClean) {
-      sserial.write("C+");
-    }
-    sserial.write("H#");
-    sserial.write(headerMessage);
-    sserial.write("+");
-
-    sserial.write("N#");
-    sserial.write(nav);
-    sserial.write("+");
-
-    sserial.write("S#");
-    sserial.write(sl1);
-    sserial.write("+");
-
-    sserial.write("s#");
-    sserial.write(sl2);
-    sserial.write("+");
-
-    sserial.write("$");
-  }
-
-private:
-  SoftwareSerial sserial = SoftwareSerial(0, 1);
-};
+  sserial.write("$");
+}

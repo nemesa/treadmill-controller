@@ -2,21 +2,22 @@
 #include "relay.h"
 #include "eeprom.h"
 #include "workout.cpp"
-#include "softserial.cpp"
+#include "softserial.h"
 
 class MenuHandler {
 public:
 
-  void setup(EEPROMHandler* eepromHAndler, RelayHandler* relayHandler, int ssRx, int ssTx) {
+  void setup(EEPROMHandler* eepromHAndler, RelayHandler* relayHandler, SoftSerialHandler* softSerialHandler, int ssRx, int ssTx) {
     Serial.println(F("MenuHandler-setup"));
     rh = relayHandler;
     eh = eepromHAndler;
+    ssh = softSerialHandler;
 
     rh->start();
     user = eh->getLastSelectedUser();
 
     wh.setup();
-    ssh.setup(ssRx, ssTx);
+    user = eh->getLastSelectedUser();
     setUser(user.num);
 
     setMenu(0, -1);
@@ -26,7 +27,7 @@ public:
   void down() {
     if (menu == 0) {
       readNextUser();
-      ssh.sendMain(false, user.name);
+      ssh->sendMain(false, user.name);
 
     } else if (menu == 1) {
       subMenu = subMenu + 1;
@@ -51,19 +52,19 @@ public:
       if (walkSpeed == 0) {
         walkSpeed = 1;
       }
-      ssh.sendMain(false, getSpeed(walkSpeed));
+      ssh->sendMain(false, getSpeed(walkSpeed));
     } else if (menu == 5 && subMenu == 30) {
       runSpeed = runSpeed - 1;
       if (runSpeed == 0) {
         runSpeed = 1;
       }
-      ssh.sendMain(false, getSpeed(runSpeed));
+      ssh->sendMain(false, getSpeed(runSpeed));
     }
   }
   void up() {
     if (menu == 0) {
       readPrevUser();
-      ssh.sendMain(false, user.name);
+      ssh->sendMain(false, user.name);
     } else if (menu == 1) {
       subMenu = subMenu - 1;
       if (subMenu == 0) {
@@ -87,13 +88,13 @@ public:
       if (walkSpeed == 161) {
         walkSpeed = 160;
       }
-      ssh.sendMain(false, getSpeed(walkSpeed));
+      ssh->sendMain(false, getSpeed(walkSpeed));
     } else if (menu == 5 && subMenu == 30) {
       runSpeed = runSpeed + 1;
       if (runSpeed == 161) {
         runSpeed = 160;
       }
-      ssh.sendMain(false, getSpeed(runSpeed));
+      ssh->sendMain(false, getSpeed(runSpeed));
     }
   }
   void left() {
@@ -169,8 +170,7 @@ public:
 
           char* timeToShow = "X: 00:00";
           getTime(timeToShow, workoutSection, timeTick);
-          ssh.sendMain(false, timeToShow);
-
+          ssh->sendMain(false, timeToShow);
 
           short currentTarget = workoutTimers[workoutSection];
           if (isRunningInSection(workoutSection)) {
@@ -183,7 +183,7 @@ public:
           if (timeLeft <= 0) {
             timeTick = -1;
             workoutSection++;
-            ssh.sendHeader(false, getWorkoutHeader(workoutSection));
+            ssh->sendHeader(false, getWorkoutHeader(workoutSection));
             if (workoutTimers[workoutSection] == 0) {
               setMenu(6, 4);
             }
@@ -200,10 +200,10 @@ public:
             if (startTimeTick == 5) {
               char* timeToShowAtStart = "Y: 00:00";
               getTime(timeToShowAtStart, workoutSection, 0);
-              ssh.sendHeaderWithMain(false, getWorkoutHeader(workoutSection), timeToShowAtStart);
+              ssh->sendHeaderWithMain(false, getWorkoutHeader(workoutSection), timeToShowAtStart);
               hasWorkoutStarted = true;
             } else {
-              ssh.sendMain(false, num);
+              ssh->sendMain(false, num);
             }
           }
           startTimeTick++;
@@ -231,38 +231,38 @@ private:
     Serial.print(F(" "));
     Serial.println(subMenu);
     if (menu == 0) {
-      ssh.sendHeaderNavigationWithMain(doCleanAll, "Welcome!", "TFTF", user.name);
+      ssh->sendHeaderNavigationWithMain(doCleanAll, "Welcome!", "TFTF", user.name);
     } else if (menu == 1) {
       if (subMenu == 1) {
-        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTT", "Start Last Selected:", wh.getNameById(user.lastSelection));
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTT", "Start Last Selected:", wh.getNameById(user.lastSelection));
       } else if (subMenu == 2) {
-        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTF", "Other Workouts", "");
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTF", "Other Workouts", "");
       } else if (subMenu == 3) {
-        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTF", "User Settings", "");
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTF", "User Settings", "");
       }
     } else if (menu == 3) {
-      ssh.sendHeaderNavigationSmallLines(doCleanAll, "Last Workout Details:", "FTFF", wh.getNameById(user.lastSelection), wh.getById(user.lastSelection));
+      ssh->sendHeaderNavigationSmallLines(doCleanAll, "Last Workout Details:", "FTFF", wh.getNameById(user.lastSelection), wh.getById(user.lastSelection));
 
     } else if (menu == 4) {
-      ssh.sendHeaderNavigationSmallLines(doCleanAll, "Other workouts:", "TTTF", wh.getNameById(subMenu), wh.getById(subMenu));
+      ssh->sendHeaderNavigationSmallLines(doCleanAll, "Other workouts:", "TTTF", wh.getNameById(subMenu), wh.getById(subMenu));
     } else if (menu == 5) {
       if (subMenu == 1) {
-        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Name", user.name);
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Name", user.name);
       } else if (subMenu == 2) {
-        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Walk Speed:", getSpeed(user.walkSpeed));
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Walk Speed:", getSpeed(user.walkSpeed));
       } else if (subMenu == 20) {
-        ssh.sendHeaderNavigationWithMain(doCleanAll, "Walk Speed:", "TTTF", getSpeed(user.walkSpeed));
+        ssh->sendHeaderNavigationWithMain(doCleanAll, "Walk Speed:", "TTTF", getSpeed(user.walkSpeed));
       } else if (subMenu == 3) {
-        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Run Speed:", getSpeed(user.runSpeed));
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Run Speed:", getSpeed(user.runSpeed));
       } else if (subMenu == 30) {
-        ssh.sendHeaderNavigationWithMain(doCleanAll, "Run Speed:", "TTTF", getSpeed(user.runSpeed));
+        ssh->sendHeaderNavigationWithMain(doCleanAll, "Run Speed:", "TTTF", getSpeed(user.runSpeed));
       }
     } else if (menu = 6) {
       if (subMenu == 1) {
         hasWorkoutStarted = false;
         timeTick = 0;
         workoutSection = 0;
-        ssh.sendHeaderNavigationWithMain(false, wh.getNameById(user.lastSelection), "FTFF", "START");
+        ssh->sendHeaderNavigationWithMain(false, wh.getNameById(user.lastSelection), "FTFF", "START");
         for (uint8_t i = 0; i < 20; i++) {
           workoutTimers[i] = 0;
         }
@@ -277,17 +277,17 @@ private:
       if (subMenu == 2) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        ssh.sendHeader(true, "starting...");
+        ssh->sendHeader(true, "starting...");
       }
       if (subMenu == 3) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        ssh.sendHeaderNavigationWithMain(doCleanAll, "Paused", "FTFF", "START");
+        ssh->sendHeaderNavigationWithMain(doCleanAll, "Paused", "FTFF", "START");
       }
       if (subMenu == 4) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        ssh.sendHeaderWithMain(false, "Finished!", "EXIT");
+        ssh->sendHeaderWithMain(false, "Finished!", "EXIT");
       }
     }
   };
@@ -451,7 +451,7 @@ private:
   UserDataStruct user;
   EEPROMHandler* eh;
   WorkoutHandler wh;
-  SoftSerialHandler ssh;
+  SoftSerialHandler* ssh;
   RelayHandler* rh;
   short workoutTimers[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 };
