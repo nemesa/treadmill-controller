@@ -12,87 +12,81 @@ public:
     sserial = SoftwareSerial(ssRx, ssTx);  // receive pin=10, transmit pin=11
     sserial.begin(9600);
   }
-  void send(bool doClean, char* message) {
-    /*Serial.println(F("SoftSerialHandler-send"));
-    Serial.println(message);*/
 
+  void sendMain(bool doClean, char* messages) {
     sserial.write("&");
     if (doClean) {
       sserial.write("C+");
     }
-    sserial.write(message);
+    sserial.write("M#");
+    sserial.write(messages);
+    sserial.write("+");
+    sserial.write("$");
+  }
+  void sendHeader(bool doClean, char* messages) {
+    sserial.write("&");
+    if (doClean) {
+      sserial.write("C+");
+    }
+    sserial.write("H#");
+    sserial.write(messages);
+    sserial.write("+");
     sserial.write("$");
   }
 
-  void send(bool doClean, char* messageA, char* messageB) {
-    /*Serial.println(F("SoftSerialHandler-sendMultiple(2)"));
-    Serial.print(messageA);
-    Serial.println(messageB);*/
-
+  void sendHeaderWithMain(bool doClean, char* headerMessage, char* mainMessage) {
     sserial.write("&");
     if (doClean) {
       sserial.write("C+");
     }
-    sserial.write(messageA);
-    sserial.write(messageB);
-
+    sserial.write("H#");
+    sserial.write(headerMessage);
+    sserial.write("+");
+    sserial.write("M#");
+    sserial.write(mainMessage);
+    sserial.write("+");
     sserial.write("$");
   }
-
-  void send(bool doClean, char* messageA, char* messageB, char* messageC) {
-    /*Serial.println(F("SoftSerialHandler-sendMultiple(3)"));
-    Serial.print(messageA);
-    Serial.print(messageB);
-    Serial.println(messageC);*/
-
+  void sendHeaderNavigationWithMain(bool doClean, char* headerMessage, char* nav, char* mainMessage) {
     sserial.write("&");
     if (doClean) {
       sserial.write("C+");
     }
-    sserial.write(messageA);
-    sserial.write(messageB);
-    sserial.write(messageC);
+    sserial.write("H#");
+    sserial.write(headerMessage);
+    sserial.write("+");
 
-    sserial.write("$");
-  }
+    sserial.write("N#");
+    sserial.write(nav);
+    sserial.write("+");
 
-
-  void send(bool doClean, char* messageA, char* messageB, char* messageC, char* messageD) {
-    /*Serial.println(F("SoftSerialHandler-sendMultiple(4)"));
-    Serial.print(messageA);
-    Serial.print(messageB);
-    Serial.print(messageC);
-    Serial.println(messageD);*/
-
-    sserial.write("&");
-    if (doClean) {
-      sserial.write("C+");
-    }
-    sserial.write(messageA);
-    sserial.write(messageB);
-    sserial.write(messageC);
-    sserial.write(messageD);
+    sserial.write("M#");
+    sserial.write(mainMessage);
+    sserial.write("+");
 
     sserial.write("$");
   }
 
-  void send(bool doClean, char* messageA, char* messageB, char* messageC, char* messageD, char* messageE) {
-    /*Serial.println(F("SoftSerialHandler-sendMultiple(5)"));
-    Serial.print(messageA);
-    Serial.print(messageB);
-    Serial.print(messageC);
-    Serial.print(messageD);
-    Serial.println(messageE);*/
-
+  void sendHeaderNavigationSmallLines(bool doClean, char* headerMessage, char* nav, char* sl1, char* sl2) {
     sserial.write("&");
     if (doClean) {
       sserial.write("C+");
     }
-    sserial.write(messageA);
-    sserial.write(messageB);
-    sserial.write(messageC);
-    sserial.write(messageD);
-    sserial.write(messageE);
+    sserial.write("H#");
+    sserial.write(headerMessage);
+    sserial.write("+");
+
+    sserial.write("N#");
+    sserial.write(nav);
+    sserial.write("+");
+
+    sserial.write("S#");
+    sserial.write(sl1);
+    sserial.write("+");
+
+    sserial.write("s#");
+    sserial.write(sl2);
+    sserial.write("+");
 
     sserial.write("$");
   }

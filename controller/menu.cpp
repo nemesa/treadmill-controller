@@ -17,14 +17,14 @@ public:
     user = eh.getLastSelectedUser();
     setUser(user.num);
 
-    //setMenu(0, -1);
-    setMenu(1, 1);
+    setMenu(0, -1);
+    //setMenu(1, 1);
     //setMenu(6, 1);
   }
   void down() {
     if (menu == 0) {
       readNextUser();
-      ssh.send(false, "M#", user.name, "+");
+      ssh.sendMain(false, user.name);
 
     } else if (menu == 1) {
       subMenu = subMenu + 1;
@@ -49,19 +49,19 @@ public:
       if (walkSpeed == 0) {
         walkSpeed = 1;
       }
-      ssh.send(false, "M#", getSpeed(walkSpeed), "+");
+      ssh.sendMain(false, getSpeed(walkSpeed));
     } else if (menu == 5 && subMenu == 30) {
       runSpeed = runSpeed - 1;
       if (runSpeed == 0) {
         runSpeed = 1;
       }
-      ssh.send(false, "M#", getSpeed(runSpeed), "+");
+      ssh.sendMain(false, getSpeed(runSpeed));
     }
   }
   void up() {
     if (menu == 0) {
       readPrevUser();
-      ssh.send(false, "M#", user.name, "+");
+      ssh.sendMain(false, user.name);
     } else if (menu == 1) {
       subMenu = subMenu - 1;
       if (subMenu == 0) {
@@ -85,13 +85,13 @@ public:
       if (walkSpeed == 161) {
         walkSpeed = 160;
       }
-      ssh.send(false, "M#", getSpeed(walkSpeed), "+");
+      ssh.sendMain(false, getSpeed(walkSpeed));
     } else if (menu == 5 && subMenu == 30) {
       runSpeed = runSpeed + 1;
       if (runSpeed == 161) {
         runSpeed = 160;
       }
-      ssh.send(false, "M#", getSpeed(runSpeed), "+");
+      ssh.sendMain(false, getSpeed(runSpeed));
     }
   }
   void left() {
@@ -103,7 +103,7 @@ public:
       setMenu(1, 2);
     } else if (menu == 5) {
       setMenu(1, 3);
-    } else if (menu == 6 && subMenu == 3) {
+    } else if (menu == 6 && (subMenu == 3 || subMenu == 1)) {
       setMenu(1, 1);
     }
   }
@@ -167,7 +167,8 @@ public:
 
           char* timeToShow = "X: 00:00";
           getTime(timeToShow, workoutSection, timeTick);
-          ssh.send(false, "M#", timeToShow, "+");
+          ssh.sendMain(false, timeToShow);
+
 
           short currentTarget = workoutTimers[workoutSection];
           if (isRunningInSection(workoutSection)) {
@@ -180,7 +181,7 @@ public:
           if (timeLeft <= 0) {
             timeTick = -1;
             workoutSection++;
-            ssh.send(false, "H#", getWorkoutHeader(workoutSection), "+");
+            ssh.sendHeader(false, getWorkoutHeader(workoutSection));
             if (workoutTimers[workoutSection] == 0) {
               setMenu(6, 4);
             }
@@ -197,10 +198,10 @@ public:
             if (startTimeTick == 5) {
               char* timeToShowAtStart = "Y: 00:00";
               getTime(timeToShowAtStart, workoutSection, 0);
-              ssh.send(false, "H#", getWorkoutHeader(workoutSection), "+M#", timeToShowAtStart, "+");
+              ssh.sendHeaderWithMain(false, getWorkoutHeader(workoutSection), timeToShowAtStart);
               hasWorkoutStarted = true;
             } else {
-              ssh.send(false, "M#", num, "+");
+              ssh.sendMain(false, num);
             }
           }
           startTimeTick++;
@@ -228,37 +229,38 @@ private:
     Serial.print(F(" "));
     Serial.println(subMenu);
     if (menu == 0) {
-      ssh.send(doCleanAll, "N#TFTF+H#Welcome!+M#", user.name, "+");
+      ssh.sendHeaderNavigationWithMain(doCleanAll, "Welcome!", "TFTF", user.name);
     } else if (menu == 1) {
       if (subMenu == 1) {
-        ssh.send(doCleanAll, "H#Select Workout!+N#TTTT+S#Start Last Selected:+s#", wh.getNameById(user.lastSelection), "+");
+        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTT", "Start Last Selected:", wh.getNameById(user.lastSelection));
       } else if (subMenu == 2) {
-        ssh.send(doCleanAll, "H#Select Workout!+N#TTTF+S#Other Workouts+s#+");
+        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTF", "Other Workouts", "");
       } else if (subMenu == 3) {
-        ssh.send(doCleanAll, "H#Select Workout!+N#TTTF+S#User Settings+s#+");
+        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", "TTTF", "User Settings", "");
       }
     } else if (menu == 3) {
-      ssh.send(doCleanAll, "H#Last Workout Details:+N#FTFF+S#", wh.getNameById(user.lastSelection), "+s#", wh.getById(user.lastSelection), "+");
+      ssh.sendHeaderNavigationSmallLines(doCleanAll, "Last Workout Details:", "FTFF", wh.getNameById(user.lastSelection), wh.getById(user.lastSelection));
+
     } else if (menu == 4) {
-      ssh.send(doCleanAll, "H#Other workouts:+N#TTTF+S#", wh.getNameById(subMenu), "+s#", wh.getById(subMenu), "+");
+      ssh.sendHeaderNavigationSmallLines(doCleanAll, "Other workouts:", "TTTF", wh.getNameById(subMenu), wh.getById(subMenu));
     } else if (menu == 5) {
       if (subMenu == 1) {
-        ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Name:+s#", user.name, "+");
+        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Name", user.name);
       } else if (subMenu == 2) {
-        ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Walk Speed:+s#", getSpeed(user.walkSpeed), "+");
+        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Walk Speed:", getSpeed(user.walkSpeed));
       } else if (subMenu == 20) {
-        ssh.send(doCleanAll, "H#Walk Speed:+N#TTTF+M#", getSpeed(user.walkSpeed), "+");
+        ssh.sendHeaderNavigationWithMain(doCleanAll, "Walk Speed:", "TTTF", getSpeed(user.walkSpeed));
       } else if (subMenu == 3) {
-        ssh.send(doCleanAll, "H#Settings:+N#TTTF+S#Run Speed:+s#", getSpeed(user.runSpeed), "+");
+        ssh.sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Run Speed:", getSpeed(user.runSpeed));
       } else if (subMenu == 30) {
-        ssh.send(doCleanAll, "H#Run Speed:+N#TTTF+M#", getSpeed(user.runSpeed), "+");
+        ssh.sendHeaderNavigationWithMain(doCleanAll, "Run Speed:", "TTTF", getSpeed(user.runSpeed));
       }
     } else if (menu = 6) {
       if (subMenu == 1) {
         hasWorkoutStarted = false;
         timeTick = 0;
         workoutSection = 0;
-        ssh.send(doCleanAll, "H#", wh.getNameById(user.lastSelection), "+M#START+");
+        ssh.sendHeaderNavigationWithMain(false, wh.getNameById(user.lastSelection), "FTFF", "START");
         for (uint8_t i = 0; i < 20; i++) {
           workoutTimers[i] = 0;
         }
@@ -273,17 +275,17 @@ private:
       if (subMenu == 2) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        ssh.send(doCleanAll, "H#starting...+");
+        ssh.sendHeader(true, "starting...");
       }
       if (subMenu == 3) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        ssh.send(doCleanAll, "H#Paused+N#FTFFM#START+");
+        ssh.sendHeaderNavigationWithMain(doCleanAll, "Paused", "FTFF", "START");
       }
       if (subMenu == 4) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        ssh.send(doCleanAll, "H#Finished!+M#EXIT+");
+        ssh.sendHeaderWithMain(false, "Finished!", "EXIT");
       }
     }
   };

@@ -57,7 +57,7 @@ public:
   }
   void main(char* text) {
     display.setTextSize(2);
-    display.fillRect(0, 14, 127, 16, BLACK);
+    display.fillRect(7, 14, 115, 16, BLACK);
     display.setCursor(7, 14);
     display.println(text);
     display.display();
