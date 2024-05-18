@@ -22,6 +22,19 @@ void RelayHandler::setup() {
 }
 
 void RelayHandler::start() {
-  Serial.print(F("RelayHandler-start "));
-  Serial.println(_pin1);
+  Serial.println(F("RelayHandler-start "));
+  if (!isRunning) {
+    isRunning = true;
+  }
+}
+
+void RelayHandler::stop() {
+  Serial.println(F("RelayHandler-stop "));
+  if (isRunning) {
+    isRunning = false;
+  }
+}
+void RelayHandler::toSpeed(uint8_t speed) {
+  Serial.print(F("RelayHandler-speed "));
+  Serial.println(speed);
 }

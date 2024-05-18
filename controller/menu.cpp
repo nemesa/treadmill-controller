@@ -12,8 +12,6 @@ public:
     rh = relayHandler;
     eh = eepromHAndler;
     ssh = softSerialHandler;
-
-    rh->start();
     user = eh->getLastSelectedUser();
 
     wh.setup();
@@ -186,6 +184,12 @@ public:
             ssh->sendHeader(false, getWorkoutHeader(workoutSection));
             if (workoutTimers[workoutSection] == 0) {
               setMenu(6, 4);
+            } else {
+              if (isRunningInSection(workoutSection)) {
+                rh->toSpeed(user.runSpeed);
+              } else {
+                rh->toSpeed(user.walkSpeed);
+              }
             }
           }
 
@@ -197,9 +201,17 @@ public:
             num[0] = (char)(48 + t);
             Serial.println(num[0]);
 
+            if (startTimeTick == 4) {
+              if (isRunningInSection(workoutSection)) {
+                rh->toSpeed(user.runSpeed);
+              } else {
+                rh->toSpeed(user.walkSpeed);
+              }
+            }
+
             if (startTimeTick == 5) {
               char* timeToShowAtStart = "Y: 00:00";
-              getTime(timeToShowAtStart, workoutSection, 0);
+              getTime(timeToShowAtStart, workoutSection, timeTick);
               ssh->sendHeaderWithMain(false, getWorkoutHeader(workoutSection), timeToShowAtStart);
               hasWorkoutStarted = true;
             } else {
@@ -278,16 +290,19 @@ private:
         hasWorkoutStarted = false;
         startTimeTick = 0;
         ssh->sendHeader(true, "starting...");
+        rh->start();
       }
       if (subMenu == 3) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
+        rh->stop();
         ssh->sendHeaderNavigationWithMain(doCleanAll, "Paused", "FTFF", "START");
       }
       if (subMenu == 4) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
         ssh->sendHeaderWithMain(false, "Finished!", "EXIT");
+        rh->stop();
       }
     }
   };

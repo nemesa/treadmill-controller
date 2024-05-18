@@ -28,12 +28,13 @@ private:
   bool _isSW;
 
   unsigned long _lastButtonPress;
-  
+
   void rightReleased(JoystickState* state);
   void leftReleased(JoystickState* state);
   void upReleased(JoystickState* state);
   void downReleased(JoystickState* state);
   void swReleased(JoystickState* state);
 };
+
 
 #endif
