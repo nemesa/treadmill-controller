@@ -1,20 +1,22 @@
 #include "Arduino.h"
-#include "eeprom.cpp"
+#include "relay.h"
+#include "eeprom.h"
 #include "workout.cpp"
 #include "softserial.cpp"
-#include "relay.h"
 
 class MenuHandler {
 public:
 
-  void setup(RelayHandler* relayHandler, int ssRx, int ssTx) {
-    rh = relayHandler;
+  void setup(EEPROMHandler* eepromHAndler, RelayHandler* relayHandler, int ssRx, int ssTx) {
     Serial.println(F("MenuHandler-setup"));
+    rh = relayHandler;
+    eh = eepromHAndler;
+
     rh->start();
-    eh.setup();
+    user = eh->getLastSelectedUser();
+
     wh.setup();
     ssh.setup(ssRx, ssTx);
-    user = eh.getLastSelectedUser();
     setUser(user.num);
 
     setMenu(0, -1);
@@ -114,7 +116,7 @@ public:
   }
   void select() {
     if (menu == 0) {
-      eh.setLastUser(user.num);
+      eh->setLastUser(user.num);
       setMenu(1, 1);
     } else if (menu == 1 && subMenu == 1) {
       setMenu(6, 1);
@@ -126,7 +128,7 @@ public:
       setMenu(6, 1);
     } else if (menu == 4) {
       user.lastSelection = subMenu;
-      eh.writeUserData(user);
+      eh->writeUserData(user);
       setMenu(6, 1);
     } else if (menu == 5) {
       if (subMenu == 1) {
@@ -136,11 +138,11 @@ public:
         setMenu(5, 30);
       } else if (subMenu == 20) {
         user.walkSpeed = walkSpeed;
-        eh.writeUserData(user);
+        eh->writeUserData(user);
         setMenu(5, 2);
       } else if (subMenu == 30) {
         user.runSpeed = runSpeed;
-        eh.writeUserData(user);
+        eh->writeUserData(user);
         setMenu(5, 3);
       }
     } else if (menu == 6 && subMenu == 1) {
@@ -442,12 +444,12 @@ private:
     return true;
   }
   void setUser(uint8_t num) {
-    user = eh.readUser(num);
+    user = eh->readUser(num);
     walkSpeed = user.walkSpeed;
     runSpeed = user.runSpeed;
   }
   UserDataStruct user;
-  EEPROMHandler eh;
+  EEPROMHandler* eh;
   WorkoutHandler wh;
   SoftSerialHandler ssh;
   RelayHandler* rh;

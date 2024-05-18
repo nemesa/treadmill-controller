@@ -19,10 +19,12 @@
 #include "jojoystick.cpp"
 #include "menu.cpp"
 #include "relay.h"
+#include "eeprom.h"
 
 JojoystickHandler jh;
 MenuHandler mh;
 RelayHandler rh(relayPin1, relayPin2, relayPin3, relayPin4, relayPin5, relayPin6);
+EEPROMHandler eh;
 
 bool inTimer = false;
 
@@ -55,8 +57,9 @@ void setup() {
   }
 
   rh.setup();
+  eh.setup();
   jh.setup(jX, jY, jSW);
-  mh.setup(&rh, ssRxPin, ssTxPin);
+  mh.setup(&eh, &rh, ssRxPin, ssTxPin);
 }
 
 void loop() {

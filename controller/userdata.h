@@ -1,3 +1,6 @@
+#ifndef UserDataStruct_h
+#define UserDataStruct_h
+
 struct UserDataStruct {
   uint8_t num;
   char* name;
@@ -6,4 +9,4 @@ struct UserDataStruct {
   uint8_t lastSelection;
 };
 
-
+#endif
