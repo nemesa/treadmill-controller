@@ -7,8 +7,14 @@ JoystickHandler::JoystickHandler(uint8_t pinX, uint8_t pinY, uint8_t pinSW) {
   _pinSW = pinSW;
 }
 
-void JoystickHandler::setup() {
+void JoystickHandler::setup(JoystickState* state) {
   Serial.println(F("JojoystickHandler-setup"));
+
+  state->isLeftReleased = false;
+  state->isRightReleased = false;
+  state->isUpReleased = false;
+  state->isDownReleased = false;
+  state->isSWReleased = false;
 
   pinMode(_pinX, INPUT);
   pinMode(_pinY, INPUT);
@@ -22,15 +28,16 @@ void JoystickHandler::setup() {
 }
 
 
-void JoystickHandler::loop() {
+void JoystickHandler::loop(JoystickState* state) {
 
-  _isLeftReleased = false;
-  _isRightReleased = false;
-  _isUpReleased = false;
-  _isDownReleased = false;
-  _isSWReleased = false;
-  _x = analogRead(_pinX);
-  _y = analogRead(_pinY);
+  state->isLeftReleased = false;
+  state->isRightReleased = false;
+  state->isUpReleased = false;
+  state->isDownReleased = false;
+  state->isSWReleased = false;
+
+  int x = analogRead(_pinX);
+  int y = analogRead(_pinY);
   if (digitalRead(_pinSW) == 0) {
 
     if (!_isSW) {
@@ -39,111 +46,103 @@ void JoystickHandler::loop() {
     _isSW = true;
   } else {
     if (_isSW && _lastButtonPress + 100 < millis()) {
-      swReleased();
+      swReleased(state);
     }
   }
 
 
-  if (_x < 100) {
+  if (x < 100) {
     _isLeft = true;
     if (_isRight) {
-      rightReleased();
+      rightReleased(state);
     }
     _isRight = false;
-  } else if (_x > 900) {
+  } else if (x > 900) {
     _isRight = true;
 
     if (_isLeft) {
-      leftReleased();
+      leftReleased(state);
     }
     _isLeft = false;
   } else {
     if (_isRight) {
-      rightReleased();
+      rightReleased(state);
     }
     if (_isLeft) {
-      leftReleased();
+      leftReleased(state);
     }
     _isLeft = false;
     _isRight = false;
   }
 
-  if (_y < 100) {
+  if (y < 100) {
     _isUp = true;
     if (_isDown) {
-      downReleased();
+      downReleased(state);
     }
     _isDown = false;
-  } else if (_y > 900) {
+  } else if (y > 900) {
     _isDown = true;
 
     if (_isUp) {
-      upReleased();
+      upReleased(state);
     }
     _isUp = false;
   } else {
     if (_isDown) {
-      downReleased();
+      downReleased(state);
     }
     if (_isUp) {
-      upReleased();
+      upReleased(state);
     }
     _isUp = false;
     _isDown = false;
   }
 }
-bool JoystickHandler::isLeftReleased() {
-  return _isLeftReleased;
-}
-bool JoystickHandler::isRightReleased() {
-  return _isRightReleased;
-}
-bool JoystickHandler::isUpReleased() {
-  return _isUpReleased;
-}
-bool JoystickHandler::isDownReleased() {
-  return _isDownReleased;
-}
-bool JoystickHandler::isSWReleased() {
-  return _isSWReleased;
-}
 
+void JoystickHandler::rightReleased(JoystickState* state) {
+  state->isLeftReleased = false;
+  state->isUpReleased = false;
+  state->isDownReleased = false;
+  state->isSWReleased = false;
+  state->isRightReleased = true;
 
-void JoystickHandler::rightReleased() {
-  _isLeftReleased = false;
-  _isUpReleased = false;
-  _isDownReleased = false;
-  _isSWReleased = false;
-  _isRightReleased = true;
+  //Serial.println(F("rightReleased"));
 }
-void JoystickHandler::leftReleased() {
-  _isRightReleased = false;
-  _isUpReleased = false;
-  _isDownReleased = false;
-  _isSWReleased = false;
-  _isLeftReleased = true;
+void JoystickHandler::leftReleased(JoystickState* state) {
+  state->isRightReleased = false;
+  state->isUpReleased = false;
+  state->isDownReleased = false;
+  state->isSWReleased = false;
+  state->isLeftReleased = true;
+
+  //Serial.println(F("leftReleased"));
 }
-void JoystickHandler::upReleased() {
-  _isLeftReleased = false;
-  _isRightReleased = false;
-  _isDownReleased = false;
-  _isSWReleased = false;
-  _isUpReleased = true;
+void JoystickHandler::upReleased(JoystickState* state) {
+  state->isLeftReleased = false;
+  state->isRightReleased = false;
+  state->isDownReleased = false;
+  state->isSWReleased = false;
+  state->isUpReleased = true;
+
+  //Serial.println(F("upReleased"));
 }
-void JoystickHandler::downReleased() {
-  _isLeftReleased = false;
-  _isRightReleased = false;
-  _isUpReleased = false;
-  _isSWReleased = false;
-  _isDownReleased = true;
+void JoystickHandler::downReleased(JoystickState* state) {
+  state->isLeftReleased = false;
+  state->isRightReleased = false;
+  state->isUpReleased = false;
+  state->isSWReleased = false;
+  state->isDownReleased = true;
+
+  //Serial.println(F("downReleased"));
 }
-void JoystickHandler::swReleased() {
+void JoystickHandler::swReleased(JoystickState* state) {
   _isSW = false;
   _lastButtonPress = 0;
-  _isLeftReleased = false;
-  _isRightReleased = false;
-  _isUpReleased = false;
-  _isDownReleased = false;
-  _isSWReleased = true;
+  state->isLeftReleased = false;
+  state->isRightReleased = false;
+  state->isUpReleased = false;
+  state->isDownReleased = false;
+  state->isSWReleased = true;
   //Serial.println(F("swReleased"));
 }

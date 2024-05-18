@@ -27,7 +27,7 @@ MenuHandler mh;
 RelayHandler rh(relayPin1, relayPin2, relayPin3, relayPin4, relayPin5, relayPin6);
 EEPROMHandler eh;
 SoftSerialHandler ssh(ssRxPin, ssTxPin);
-
+struct JoystickState js;
 bool inTimer = false;
 
 void setup() {
@@ -60,28 +60,30 @@ void setup() {
 
   rh.setup();
   eh.setup();
-  jh.setup();
+  jh.setup(&js);
   ssh.setup();
 
   mh.setup(&eh, &rh, &ssh, ssRxPin, ssTxPin);
 }
 
-void loop() {
 
-  jh.loop();
-  if (jh.isDownReleased()) {
+
+void loop() {
+  
+  jh.loop(&js);
+  if (js.isDownReleased) {
     mh.down();
   }
-  if (jh.isUpReleased()) {
+  if (js.isUpReleased) {
     mh.up();
   }
-  if (jh.isLeftReleased()) {
+  if (js.isLeftReleased) {
     mh.left();
   }
-  if (jh.isRightReleased()) {
+  if (js.isRightReleased) {
     mh.right();
   }
-  if (jh.isSWReleased()) {
+  if (js.isSWReleased) {
     mh.select();
   }
 
