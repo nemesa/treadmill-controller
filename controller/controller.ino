@@ -5,16 +5,17 @@
 #define jX A0
 #define jY A1
 #define jSW 4
-#define ssTxPin 11
-#define ssRxPin 10
-#define displayReadyPin 8
+#define ssTxPin 13
+#define ssRxPin 12
+#define displayReadyPin 11
 
 #include "jojoystick.cpp"
 #include "menu.cpp"
-
+#include "relay.h"
 
 JojoystickHandler jh;
 MenuHandler mh;
+RelayHandler rh(10);
 
 bool inTimer = false;
 
@@ -46,9 +47,9 @@ void setup() {
     }
   }
 
-
+  rh.setup();
   jh.setup(jX, jY, jSW);
-  mh.setup(ssRxPin, ssTxPin);
+  mh.setup(&rh, ssRxPin, ssTxPin);
 }
 
 void loop() {

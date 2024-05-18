@@ -2,12 +2,15 @@
 #include "eeprom.cpp"
 #include "workout.cpp"
 #include "softserial.cpp"
+#include "relay.h"
 
 class MenuHandler {
 public:
 
-  void setup(int ssRx, int ssTx) {
+  void setup(RelayHandler* relayHandler, int ssRx, int ssTx) {
+    rh = relayHandler;
     Serial.println(F("MenuHandler-setup"));
+    rh->start();
     eh.setup();
     wh.setup();
     ssh.setup(ssRx, ssTx);
@@ -193,7 +196,7 @@ public:
 
             if (startTimeTick == 5) {
               char* timeToShowAtStart = "Y: 00:00";
-              getTime(timeToShowAtStart, workoutSection, 0);              
+              getTime(timeToShowAtStart, workoutSection, 0);
               ssh.send(false, "H#", getWorkoutHeader(workoutSection), "+M#", timeToShowAtStart, "+");
               hasWorkoutStarted = true;
             } else {
@@ -445,5 +448,6 @@ private:
   EEPROMHandler eh;
   WorkoutHandler wh;
   SoftSerialHandler ssh;
+  RelayHandler* rh;
   short workoutTimers[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 };
