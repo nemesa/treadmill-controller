@@ -38,3 +38,37 @@ void RelayHandler::toSpeed(uint8_t speed) {
   Serial.print(F("RelayHandler-speed "));
   Serial.println(speed);
 }
+
+void RelayHandler::pinTest(uint8_t pinNo) {
+  Serial.print(F("RelayHandler-pinTest "));
+  Serial.println(pinNo);
+  if (pinNo > 0 && pinNo < 7) {
+    sendSignal(pinNo);
+  } else {
+    sendSignal(1);
+  }
+}
+
+void RelayHandler::sendSignal(uint8_t pinNo) {
+  uint8_t pin = _pin1;
+  if (pinNo == 2) {
+    pin = _pin2;
+  }
+  if (pinNo == 3) {
+    pin = _pin3;
+  }
+  if (pinNo == 4) {
+    pin = _pin4;
+  }
+  if (pinNo == 5) {
+    pin = _pin5;
+  }
+  if (pinNo == 6) {
+    pin = _pin6;
+  }
+
+
+  digitalWrite(pin, HIGH);
+  delay(50);
+  digitalWrite(pin, LOW);
+}

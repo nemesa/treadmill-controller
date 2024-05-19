@@ -18,9 +18,8 @@ public:
     user = eh->getLastSelectedUser();
     setUser(user.num);
 
-    setMenu(0, -1);
-    //setMenu(1, 1);
-    //setMenu(6, 1);
+    //setMenu(0, -1);
+    setMenu(5, 4);
   }
   void down() {
     if (menu == 0) {
@@ -41,8 +40,14 @@ public:
       setMenu(4, subMenu);
     } else if (menu == 5 && subMenu < 10) {
       subMenu = subMenu + 1;
-      if (subMenu == 4) {
+      if (subMenu == 6) {
         subMenu = 1;
+      }
+      setMenu(5, subMenu);
+    } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
+      subMenu = subMenu + 1;
+      if (subMenu == 47) {
+        subMenu = 41;
       }
       setMenu(5, subMenu);
     } else if (menu == 5 && subMenu == 20) {
@@ -78,7 +83,13 @@ public:
     } else if (menu == 5 && subMenu < 10) {
       subMenu = subMenu - 1;
       if (subMenu == 0) {
-        subMenu = 3;
+        subMenu = 5;
+      }
+      setMenu(5, subMenu);
+    } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
+      subMenu = subMenu - 1;
+      if (subMenu == 40) {
+        subMenu = 46;
       }
       setMenu(5, subMenu);
     } else if (menu == 5 && subMenu == 20) {
@@ -135,6 +146,10 @@ public:
         setMenu(5, 20);
       } else if (subMenu == 3) {
         setMenu(5, 30);
+      } else if (subMenu == 4) {
+        setMenu(5, 41);
+      } else if (subMenu == 5) {
+        setMenu(5, 50);
       } else if (subMenu == 20) {
         user.walkSpeed = walkSpeed;
         eh->writeUserData(user);
@@ -143,6 +158,10 @@ public:
         user.runSpeed = runSpeed;
         eh->writeUserData(user);
         setMenu(5, 3);
+      } else if (subMenu > 40 && subMenu <= 49) { 
+        uint8_t pinNo = subMenu - 40;       
+        rh->pinTest(pinNo);
+        
       }
     } else if (menu == 6 && subMenu == 1) {
       setMenu(6, 2);
@@ -268,6 +287,17 @@ private:
         ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Run Speed:", getSpeed(user.runSpeed));
       } else if (subMenu == 30) {
         ssh->sendHeaderNavigationWithMain(doCleanAll, "Run Speed:", "TTTF", getSpeed(user.runSpeed));
+      } else if (subMenu == 4) {
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Control pin test", "");
+      } else if (subMenu > 40 && subMenu <= 46) {
+        uint8_t pinNo = subMenu - 40;
+        char* pinNoStr = "  Pin:0";
+        pinNoStr[6] = (char)(48 + pinNo);
+        ssh->sendHeaderNavigationWithMain(doCleanAll, "Control pin test:", "TTTF", pinNoStr);
+      } else if (subMenu == 5) {
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Control pin setup", "");
+      } else if (subMenu == 50) {
+        ssh->sendHeaderNavigationWithMain(doCleanAll, "Control pin setup:", "TTTF", "1");
       }
     } else if (menu = 6) {
       if (subMenu == 1) {

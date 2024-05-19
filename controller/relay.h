@@ -9,6 +9,7 @@ public:
   void start();
   void stop();
   void toSpeed(uint8_t speed);
+  void pinTest(uint8_t pinNo);
 private:
   uint8_t currentSpeed = 0;
   bool isRunning = false;
@@ -18,6 +19,7 @@ private:
   int _pin4 = 0;
   int _pin5 = 0;
   int _pin6 = 0;
+  void sendSignal(uint8_t pinNo);
 };
 
 #endif
