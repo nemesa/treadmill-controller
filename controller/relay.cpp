@@ -48,6 +48,7 @@ void RelayHandler::toSpeed(ControlPinMapStruct* pinMap, uint8_t speed) {
   if (speed < 45) {
     currentSpeed = 30;
     sendSignal(pinMap->speed30);
+    
   } else if (speed < 75) {
     currentSpeed = 60;
     sendSignal(pinMap->speed60);
@@ -80,7 +81,7 @@ void RelayHandler::toSpeed(ControlPinMapStruct* pinMap, uint8_t speed) {
         sendSignal(pinMap->speedInc);
       }
 
-      delay(50);
+    //  delay(100);
     }
   }
 }
@@ -120,6 +121,7 @@ void RelayHandler::sendSignal(uint8_t pinNo) {
 
 
   digitalWrite(pin, HIGH);
-  delay(50);
+  delay(70);
   digitalWrite(pin, LOW);
+  delay(100);
 }
