@@ -1,5 +1,7 @@
 #include "Arduino.h"
 #include "relay.h"
+#include "relay.h"
+#include "controlpinmap.h"
 
 RelayHandler::RelayHandler(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6) {
   _pin1 = pin1;
@@ -21,20 +23,24 @@ void RelayHandler::setup() {
   pinMode(_pin6, OUTPUT);
 }
 
-void RelayHandler::start() {
+void RelayHandler::start(ControlPinMapStruct* pinMap) {
   Serial.println(F("RelayHandler-start "));
   if (!isRunning) {
     isRunning = true;
+    sendSignal(pinMap->startStop);
+    currentSpeed = 1;
   }
 }
 
-void RelayHandler::stop() {
+void RelayHandler::stop(ControlPinMapStruct* pinMap) {
   Serial.println(F("RelayHandler-stop "));
   if (isRunning) {
     isRunning = false;
+    sendSignal(pinMap->startStop);
+    currentSpeed = 0;
   }
 }
-void RelayHandler::toSpeed(uint8_t speed) {
+void RelayHandler::toSpeed(ControlPinMapStruct* pinMap, uint8_t speed) {
   Serial.print(F("RelayHandler-speed "));
   Serial.println(speed);
 }
@@ -50,6 +56,8 @@ void RelayHandler::pinTest(uint8_t pinNo) {
 }
 
 void RelayHandler::sendSignal(uint8_t pinNo) {
+  Serial.print(F("RelayHandler-sendSignal on pin:"));
+  Serial.println(pinNo);
   uint8_t pin = _pin1;
   if (pinNo == 2) {
     pin = _pin2;

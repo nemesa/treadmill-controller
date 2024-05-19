@@ -13,13 +13,14 @@ public:
     eh = eepromHAndler;
     ssh = softSerialHandler;
     user = eh->getLastSelectedUser();
+    pinMap = eh->getControlPinMap();
 
     wh.setup();
-    user = eh->getLastSelectedUser();
     setUser(user.num);
 
-    //setMenu(0, -1);
-    setMenu(5, 4);
+    //setMenu(0, -1,-1);
+    setMenu(1, 1,-1);
+    //setMenu(5, 5, 0);
   }
   void down() {
     if (menu == 0) {
@@ -31,25 +32,19 @@ public:
       if (subMenu == 4) {
         subMenu = 1;
       }
-      setMenu(1, subMenu);
+      setMenu(1, subMenu, 0);
     } else if (menu == 4) {
       subMenu = subMenu + 1;
       if (subMenu == 30) {
         subMenu = 1;
       }
-      setMenu(4, subMenu);
+      setMenu(4, subMenu, 0);
     } else if (menu == 5 && subMenu < 10) {
       subMenu = subMenu + 1;
       if (subMenu == 6) {
         subMenu = 1;
       }
-      setMenu(5, subMenu);
-    } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
-      subMenu = subMenu + 1;
-      if (subMenu == 47) {
-        subMenu = 41;
-      }
-      setMenu(5, subMenu);
+      setMenu(5, subMenu, 0);
     } else if (menu == 5 && subMenu == 20) {
       walkSpeed = walkSpeed - 1;
       if (walkSpeed == 0) {
@@ -62,6 +57,18 @@ public:
         runSpeed = 1;
       }
       ssh->sendMain(false, getSpeed(runSpeed));
+    } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
+      subMenu = subMenu + 1;
+      if (subMenu == 47) {
+        subMenu = 41;
+      }
+      setMenu(5, subMenu, 0);
+    } else if (menu == 5 && subMenu > 50 && subMenu <= 59) {
+      subMenu = subMenu + 1;
+      if (subMenu == 57) {
+        subMenu = 51;
+      }
+      setMenu(5, subMenu, 0);
     }
   }
   void up() {
@@ -73,25 +80,19 @@ public:
       if (subMenu == 0) {
         subMenu = 3;
       }
-      setMenu(1, subMenu);
+      setMenu(1, subMenu, 0);
     } else if (menu == 4) {
       subMenu = subMenu - 1;
       if (subMenu == 0) {
         subMenu = 29;
       }
-      setMenu(4, subMenu);
+      setMenu(4, subMenu, 0);
     } else if (menu == 5 && subMenu < 10) {
       subMenu = subMenu - 1;
       if (subMenu == 0) {
         subMenu = 5;
       }
-      setMenu(5, subMenu);
-    } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
-      subMenu = subMenu - 1;
-      if (subMenu == 40) {
-        subMenu = 46;
-      }
-      setMenu(5, subMenu);
+      setMenu(5, subMenu, 0);
     } else if (menu == 5 && subMenu == 20) {
       walkSpeed = walkSpeed + 1;
       if (walkSpeed == 161) {
@@ -104,73 +105,108 @@ public:
         runSpeed = 160;
       }
       ssh->sendMain(false, getSpeed(runSpeed));
+    } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
+      subMenu = subMenu - 1;
+      if (subMenu == 40) {
+        subMenu = 46;
+      }
+      setMenu(5, subMenu, 0);
+    } else if (menu == 5 && subMenu > 50 && subMenu <= 59) {
+      subMenu = subMenu - 1;
+      if (subMenu == 50) {
+        subMenu = 56;
+      }
+      setMenu(5, subMenu, 0);
     }
   }
   void left() {
     if (menu == 1) {
-      setMenu(0, -1);
+      setMenu(0, -1, 0);
     } else if (menu == 3) {
-      setMenu(1, 1);
+      setMenu(1, 1, 0);
     } else if (menu == 4) {
-      setMenu(1, 2);
+      setMenu(1, 2, 0);
     } else if (menu == 5) {
-      setMenu(1, 3);
+      setMenu(1, 3, 0);
     } else if (menu == 6 && (subMenu == 3 || subMenu == 1)) {
-      setMenu(1, 1);
+      setMenu(1, 1, 0);
     }
   }
   void right() {
     if (menu == 1) {
-      setMenu(3, -1);
+      setMenu(3, -1, 0);
+    } else if (menu == 5 && subMenu > 50 && subMenu <= 59) {
+      subMenu2 = subMenu2 + 1;
+      if (subMenu2 == 7) {
+        subMenu2 = 1;
+      }
+      setMenu(5, subMenu, subMenu2);
     }
   }
   void select() {
     if (menu == 0) {
       eh->setLastUser(user.num);
-      setMenu(1, 1);
+      setMenu(1, 1, 0);
     } else if (menu == 1 && subMenu == 1) {
-      setMenu(6, 1);
+      setMenu(6, 1, 0);
     } else if (menu == 1 && subMenu == 2) {
-      setMenu(4, user.lastSelection);
+      setMenu(4, user.lastSelection, 0);
     } else if (menu == 1 && subMenu == 3) {
-      setMenu(5, 1);
+      setMenu(5, 1, 0);
     } else if (menu == 3) {
-      setMenu(6, 1);
+      setMenu(6, 1, 0);
     } else if (menu == 4) {
       user.lastSelection = subMenu;
       eh->writeUserData(user);
-      setMenu(6, 1);
+      setMenu(6, 1, 0);
     } else if (menu == 5) {
       if (subMenu == 1) {
       } else if (subMenu == 2) {
-        setMenu(5, 20);
+        setMenu(5, 20, 0);
       } else if (subMenu == 3) {
-        setMenu(5, 30);
+        setMenu(5, 30, 0);
       } else if (subMenu == 4) {
-        setMenu(5, 41);
+        setMenu(5, 41, 0);
       } else if (subMenu == 5) {
-        setMenu(5, 50);
+        setMenu(5, 51, 0);
       } else if (subMenu == 20) {
         user.walkSpeed = walkSpeed;
         eh->writeUserData(user);
-        setMenu(5, 2);
+        setMenu(5, 2, 0);
       } else if (subMenu == 30) {
         user.runSpeed = runSpeed;
         eh->writeUserData(user);
-        setMenu(5, 3);
-      } else if (subMenu > 40 && subMenu <= 49) { 
-        uint8_t pinNo = subMenu - 40;       
+        setMenu(5, 3, 0);
+      } else if (subMenu > 40 && subMenu <= 49) {
+        uint8_t pinNo = subMenu - 40;
         rh->pinTest(pinNo);
-        
+      } else if (subMenu == 51) {
+        pinMap.startStop = subMenu2;
+        eh->writeControlPinMap(pinMap);
+      } else if (subMenu == 52) {
+        pinMap.speedInc = subMenu2;
+        eh->writeControlPinMap(pinMap);
+      } else if (subMenu == 53) {
+        pinMap.speedDec = subMenu2;
+        eh->writeControlPinMap(pinMap);
+      } else if (subMenu == 54) {
+        pinMap.speed30 = subMenu2;
+        eh->writeControlPinMap(pinMap);
+      } else if (subMenu == 55) {
+        pinMap.speed60 = subMenu2;
+        eh->writeControlPinMap(pinMap);
+      } else if (subMenu == 56) {
+        pinMap.speed100 = subMenu2;
+        eh->writeControlPinMap(pinMap);
       }
     } else if (menu == 6 && subMenu == 1) {
-      setMenu(6, 2);
+      setMenu(6, 2, 0);
     } else if (menu == 6 && subMenu == 2) {
-      setMenu(6, 3);
+      setMenu(6, 3, 0);
     } else if (menu == 6 && subMenu == 3) {
-      setMenu(6, 2);
+      setMenu(6, 2, 0);
     } else if (menu == 6 && subMenu == 4) {
-      setMenu(1, 1);
+      setMenu(1, 1, 0);
     }
   }
   void timerTick() {
@@ -202,12 +238,12 @@ public:
             workoutSection++;
             ssh->sendHeader(false, getWorkoutHeader(workoutSection));
             if (workoutTimers[workoutSection] == 0) {
-              setMenu(6, 4);
+              setMenu(6, 4, 0);
             } else {
               if (isRunningInSection(workoutSection)) {
-                rh->toSpeed(user.runSpeed);
+                rh->toSpeed(&pinMap, user.runSpeed);
               } else {
-                rh->toSpeed(user.walkSpeed);
+                rh->toSpeed(&pinMap, user.walkSpeed);
               }
             }
           }
@@ -222,9 +258,9 @@ public:
 
             if (startTimeTick == 4) {
               if (isRunningInSection(workoutSection)) {
-                rh->toSpeed(user.runSpeed);
+                rh->toSpeed(&pinMap, user.runSpeed);
               } else {
-                rh->toSpeed(user.walkSpeed);
+                rh->toSpeed(&pinMap, user.walkSpeed);
               }
             }
 
@@ -248,6 +284,7 @@ public:
 private:
   uint8_t menu = -1;
   uint8_t subMenu = -1;
+  uint8_t subMenu2 = -1;
   uint8_t walkSpeed = -1;
   uint8_t runSpeed = -1;
   bool inTimer = false;
@@ -260,7 +297,9 @@ private:
     Serial.print(F("render "));
     Serial.print(menu);
     Serial.print(F(" "));
-    Serial.println(subMenu);
+    Serial.print(subMenu);
+    Serial.print(F(" "));
+    Serial.println(subMenu2);
     if (menu == 0) {
       ssh->sendHeaderNavigationWithMain(doCleanAll, "Welcome!", "TFTF", user.name);
     } else if (menu == 1) {
@@ -296,8 +335,48 @@ private:
         ssh->sendHeaderNavigationWithMain(doCleanAll, "Control pin test:", "TTTF", pinNoStr);
       } else if (subMenu == 5) {
         ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Control pin setup", "");
-      } else if (subMenu == 50) {
-        ssh->sendHeaderNavigationWithMain(doCleanAll, "Control pin setup:", "TTTF", "1");
+      } else if (subMenu == 51) {
+        if (subMenu2 == 0) {
+          subMenu2 = pinMap.startStop;
+        }
+        char* pinNoStr = "  Pin:0";
+        pinNoStr[6] = (char)(48 + subMenu2);
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", "TTTT", "Start/Stop", pinNoStr);
+      } else if (subMenu == 52) {
+        if (subMenu2 == 0) {
+          subMenu2 = pinMap.speedInc;
+        }
+        char* pinNoStr = "  Pin:0";
+        pinNoStr[6] = (char)(48 + subMenu2);
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", "TTTT", "Speed inc. 0.1", pinNoStr);
+      } else if (subMenu == 53) {
+        if (subMenu2 == 0) {
+          subMenu2 = pinMap.speedDec;
+        }
+        char* pinNoStr = "  Pin:0";
+        pinNoStr[6] = (char)(48 + subMenu2);
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", "TTTT", "Speed dec. 0.1", pinNoStr);
+      } else if (subMenu == 54) {
+        if (subMenu2 == 0) {
+          subMenu2 = pinMap.speed30;
+        }
+        char* pinNoStr = "  Pin:0";
+        pinNoStr[6] = (char)(48 + subMenu2);
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", "TTTT", "Speed to 3.0", pinNoStr);
+      } else if (subMenu == 55) {
+        if (subMenu2 == 0) {
+          subMenu2 = pinMap.speed60;
+        }
+        char* pinNoStr = "  Pin:0";
+        pinNoStr[6] = (char)(48 + subMenu2);
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", "TTTT", "Speed to 6.0", pinNoStr);
+      } else if (subMenu == 56) {
+        if (subMenu2 == 0) {
+          subMenu2 = pinMap.speed100;
+        }
+        char* pinNoStr = "  Pin:0";
+        pinNoStr[6] = (char)(48 + subMenu2);
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", "TTTT", "Speed to 10.0", pinNoStr);
       }
     } else if (menu = 6) {
       if (subMenu == 1) {
@@ -320,19 +399,19 @@ private:
         hasWorkoutStarted = false;
         startTimeTick = 0;
         ssh->sendHeader(true, "starting...");
-        rh->start();
+        rh->start(&pinMap);
       }
       if (subMenu == 3) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        rh->stop();
+        rh->stop(&pinMap);
         ssh->sendHeaderNavigationWithMain(doCleanAll, "Paused", "FTFF", "START");
       }
       if (subMenu == 4) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
         ssh->sendHeaderWithMain(false, "Finished!", "EXIT");
-        rh->stop();
+        rh->stop(&pinMap);
       }
     }
   };
@@ -350,17 +429,20 @@ private:
     }
     setUser(num);
   }
-  void setMenu(short newMenu, short newSubMenu) {
+  void setMenu(short newMenu, short newSubMenu, short newSubMenu2) {
     Serial.print(F("setMenu "));
     Serial.print(newMenu);
     Serial.print(F(" "));
-    Serial.println(newSubMenu);
+    Serial.print(newSubMenu);
+    Serial.print(F(" "));
+    Serial.println(newSubMenu2);
     bool doClear = false;
     if (menu != newMenu) {
       doClear = true;
     }
     menu = newMenu;
     subMenu = newSubMenu;
+    subMenu2 = newSubMenu2;
     inTimer = false;
     render(doClear);
   };
@@ -494,6 +576,7 @@ private:
     runSpeed = user.runSpeed;
   }
   UserDataStruct user;
+  ControlPinMapStruct pinMap;
   EEPROMHandler* eh;
   WorkoutHandler wh;
   SoftSerialHandler* ssh;

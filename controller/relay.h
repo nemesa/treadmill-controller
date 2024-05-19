@@ -1,14 +1,16 @@
 #ifndef Relay_h
 #define Relay_h
 
+#include "controlpinmap.h"
+
 class RelayHandler {
 public:
   RelayHandler();
   RelayHandler(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6);
   void setup();
-  void start();
-  void stop();
-  void toSpeed(uint8_t speed);
+  void start(ControlPinMapStruct* pinMap);
+  void stop(ControlPinMapStruct* pinMap);
+  void toSpeed(ControlPinMapStruct* pinMap, uint8_t speed);
   void pinTest(uint8_t pinNo);
 private:
   uint8_t currentSpeed = 0;
