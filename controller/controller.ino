@@ -63,7 +63,7 @@ void setup() {
   jh.setup(&js);
   ssh.setup();
 
-  mh.setup(&eh, &rh, &ssh, ssRxPin, ssTxPin);
+  mh.setup(&eh, &rh, &ssh);
 }
 
 
@@ -92,7 +92,6 @@ void loop() {
     mh.timerTick();
   }
 
-  delay(10);
 }
 
 

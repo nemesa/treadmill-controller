@@ -51,28 +51,29 @@ void EEPROMHandler::setup() {
   defaultUser.walkSpeed = 51;
   defaultUser.runSpeed = 71;
   defaultUser.lastSelection = 1;
+  defaultUser.name = "u1     ";
 
   if (EEPROM.read(10) == 255) {
     defaultUser.num = 1;
-    defaultUser.name = "user__1";
+    defaultUser.name[1] = (char)49;  //1
     writeUserData(defaultUser);
   }
 
   if (EEPROM.read(20) == 255) {
     defaultUser.num = 2;
-    defaultUser.name = "user__2";
+    defaultUser.name[1] = (char)50;  //2
     writeUserData(defaultUser);
   }
 
   if (EEPROM.read(30) == 255) {
     defaultUser.num = 3;
-    defaultUser.name = "user3";
+    defaultUser.name[1] = (char)51;  //3
     writeUserData(defaultUser);
   }
 
   if (EEPROM.read(40) == 255) {
     defaultUser.num = 4;
-    defaultUser.name = "user4";
+    defaultUser.name[1] = (char)52;  //4
     writeUserData(defaultUser);
   }
 }
@@ -98,13 +99,8 @@ UserDataStruct EEPROMHandler::getLastSelectedUser() {
 void EEPROMHandler::writeUserData(struct UserDataStruct user) {
 
   uint8_t offset = user.num * 10;
-  int len = strlen(user.name);
-  for (int i = 0; i <= 6; i++) {
-    if (i >= len) {
-      EEPROM.update(offset + i, ' ');
-    } else {
-      EEPROM.update(offset + i, user.name[i]);
-    }
+  for (byte i = 0; i <= 6; i++) {
+    EEPROM.update(offset + i, user.name[i]);
   }
   EEPROM.update(offset + 7, user.walkSpeed);
   EEPROM.update(offset + 8, user.runSpeed);
@@ -117,7 +113,7 @@ UserDataStruct EEPROMHandler::readUser(uint8_t num) {
   user.name = "";
   char* name = "       ";
   uint8_t offset = user.num * 10;
-  for (int i = 0; i <= 6; i++) {
+  for (byte i = 0; i <= 6; i++) {
     name[i] = (char)EEPROM.read(offset + i);
   }
   user.name = name;

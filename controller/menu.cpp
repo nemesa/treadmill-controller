@@ -7,7 +7,7 @@
 class MenuHandler {
 public:
 
-  void setup(EEPROMHandler* eepromHAndler, RelayHandler* relayHandler, SoftSerialHandler* softSerialHandler, int ssRx, int ssTx) {
+  void setup(EEPROMHandler* eepromHAndler, RelayHandler* relayHandler, SoftSerialHandler* softSerialHandler) {
     Serial.println(F("MenuHandler-setup"));
     rh = relayHandler;
     eh = eepromHAndler;
