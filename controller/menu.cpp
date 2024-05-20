@@ -20,7 +20,7 @@ public:
 
     //setMenu(0, -1,-1);
     //setMenu(1, 1,-1);
-    setMenu(5, 5, 0);
+    setMenu(5, 1, 0);
   }
   void down() {
     if (menu == 0) {
@@ -36,6 +36,9 @@ public:
     } else if (menu == 5 && subMenu < 10) {
       subMenu = next(1, 5, subMenu, true, true);
       setMenu(5, subMenu, 0);
+    } else if (menu == 5 && subMenu == 10) {
+      user.name[subMenu2] = (char)next(32, 122, user.name[subMenu2], true, true);
+      setMenu(5, subMenu, subMenu2);
     } else if (menu == 5 && subMenu == 20) {
       walkSpeed = next(1, 160, walkSpeed, true, false);
       ssh->sendMain(false, getSpeed(walkSpeed));
@@ -63,6 +66,9 @@ public:
     } else if (menu == 5 && subMenu < 10) {
       subMenu = next(1, 5, subMenu, false, true);
       setMenu(5, subMenu, 0);
+    } else if (menu == 5 && subMenu == 10) {
+      user.name[subMenu2] = (char)next(32, 122, user.name[subMenu2], false, true);
+      setMenu(5, subMenu, subMenu2);
     } else if (menu == 5 && subMenu == 20) {
       walkSpeed = next(1, 160, walkSpeed, false, false);
       ssh->sendMain(false, getSpeed(walkSpeed));
@@ -85,7 +91,21 @@ public:
     } else if (menu == 4) {
       setMenu(1, 2, 0);
     } else if (menu == 5) {
-      if (subMenu > 50 && subMenu <= 59) {
+      if (subMenu == 10) {
+        if (subMenu2 == 0) {
+          user = eh->getLastSelectedUser();
+          setMenu(5, 1, 0);
+        } else {
+          subMenu2 = next(0, 6, subMenu2, false, true);
+          setMenu(5, subMenu, subMenu2);
+        }
+      } else if (subMenu == 20) {
+        setMenu(5, 2, 0);
+      } else if (subMenu == 30) {
+        setMenu(5, 3, 0);
+      } else if (subMenu > 40 && subMenu <= 49) {
+        setMenu(5, 4, 0);
+      } else if (subMenu > 50 && subMenu <= 59) {
         if (subMenu2 == 1) {
           setMenu(5, 5, 0);
         } else {
@@ -102,8 +122,10 @@ public:
   void right() {
     if (menu == 1) {
       setMenu(3, -1, 0);
+    } else if (menu == 5 && subMenu == 10) {
+      subMenu2 = next(0, 6, subMenu2, true, true);
+      setMenu(5, subMenu, subMenu2);
     } else if (menu == 5 && subMenu > 50 && subMenu <= 59) {
-
       subMenu2 = next(1, 6, subMenu2, true, true);
       setMenu(5, subMenu, subMenu2);
     }
@@ -126,6 +148,7 @@ public:
       setMenu(6, 1, 0);
     } else if (menu == 5) {
       if (subMenu == 1) {
+        setMenu(5, 10, 0);
       } else if (subMenu == 2) {
         setMenu(5, 20, 0);
       } else if (subMenu == 3) {
@@ -142,6 +165,9 @@ public:
         user.runSpeed = runSpeed;
         eh->writeUserData(user);
         setMenu(5, 3, 0);
+      } else if (subMenu == 10) {
+        eh->writeUserData(user);
+        setMenu(5, 1, 0);
       } else if (subMenu > 40 && subMenu <= 49) {
         uint8_t pinNo = subMenu - 40;
         rh->pinTest(&pinMap, pinNo);
@@ -282,7 +308,14 @@ private:
       ssh->sendHeaderNavigationSmallLines(doCleanAll, "Other workouts:", "TTTF", wh.getNameById(subMenu), wh.getById(subMenu));
     } else if (menu == 5) {
       if (subMenu == 1) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Name", user.name);
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTT", "Name", user.name);
+      } else if (subMenu == 10) {
+        char* indicator = "^^^^^^^";
+        for (int i = 0; i <= 6; i++) {
+          indicator[i] = subMenu2 != i ? (char)32 : (char)94;  // SPACE OR ^
+        }
+
+        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Name:", "TTTF", user.name, indicator);
       } else if (subMenu == 2) {
         ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", "TTTF", "Walk Speed:", getSpeed(user.walkSpeed));
       } else if (subMenu == 20) {
