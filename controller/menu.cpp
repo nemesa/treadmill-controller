@@ -89,10 +89,7 @@ public:
         if (subMenu2 == 1) {
           setMenu(5, 5, 0);
         } else {
-          subMenu2 = subMenu2 - 1;
-          if (subMenu2 == 0) {
-            subMenu2 = 1;
-          }
+          subMenu2 = next(1, 6, subMenu2, false, true);
           setMenu(5, subMenu, subMenu2);
         }
       } else {
@@ -106,10 +103,8 @@ public:
     if (menu == 1) {
       setMenu(3, -1, 0);
     } else if (menu == 5 && subMenu > 50 && subMenu <= 59) {
-      subMenu2 = subMenu2 + 1;
-      if (subMenu2 == 7) {
-        subMenu2 = 1;
-      }
+
+      subMenu2 = next(1, 6, subMenu2, true, true);
       setMenu(5, subMenu, subMenu2);
     }
   }
