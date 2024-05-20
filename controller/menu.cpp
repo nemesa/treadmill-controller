@@ -18,8 +18,8 @@ public:
     wh.setup();
     setUser(user.num);
 
-    //setMenu(0, -1,-1);
-    setMenu(3, -1,-1);
+    setMenu(0, -1,-1);
+    //setMenu(3, -1,-1);
     
   }
   void down() {

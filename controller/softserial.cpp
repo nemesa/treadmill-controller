@@ -8,35 +8,42 @@ SoftSerialHandler::SoftSerialHandler(short ssRx, short ssTx) {
 }
 
 void SoftSerialHandler::setup() {
-  Serial.println(F("SoftSerialHandler-setup"));
+  /*Serial.println(F("SoftSerialHandler-setup"));
   sserial = SoftwareSerial(_ssRx, _ssTx);
-  sserial.begin(9600);
+  sserial.begin(9600);*/
+  dh.setup();
 }
 
 void SoftSerialHandler::sendMain(bool doClean, char* messages) {
-  sserial.write("&");
+   if (doClean) {
+    dh.cleanAll();
+  }
+ 
+  dh.main(messages);
+
+ /* sserial.write("&");
   if (doClean) {
     sserial.write("C+");
   }
   sserial.write("M#");
   sserial.write(messages);
   sserial.write("+");
-  sserial.write("$");
+  sserial.write("$");*/
 }
 
 void SoftSerialHandler::sendHeader(bool doClean, char* messages) {
-  sserial.write("&");
+ /* sserial.write("&");
   if (doClean) {
     sserial.write("C+");
   }
   sserial.write("H#");
   sserial.write(messages);
   sserial.write("+");
-  sserial.write("$");
+  sserial.write("$");*/
 }
 
 void SoftSerialHandler::sendHeaderWithMain(bool doClean, char* headerMessage, char* mainMessage) {
-  sserial.write("&");
+  /*sserial.write("&");
   if (doClean) {
     sserial.write("C+");
   }
@@ -46,14 +53,20 @@ void SoftSerialHandler::sendHeaderWithMain(bool doClean, char* headerMessage, ch
   sserial.write("M#");
   sserial.write(mainMessage);
   sserial.write("+");
-  sserial.write("$");
+  sserial.write("$");*/
 }
 
 void SoftSerialHandler::sendHeaderNavigationWithMain(bool doClean, char* headerMessage, char* nav, char* mainMessage) {
-  sserial.write("&");
+
+  
   if (doClean) {
-    sserial.write("C+");
+    dh.cleanAll();
   }
+  dh.header(headerMessage);
+  dh.navigationOptions(true,false,true,false);
+  dh.main(mainMessage);
+  /*sserial.write("&");
+  
   sserial.write("H#");
   sserial.write(headerMessage);
   sserial.write("+");
@@ -66,11 +79,11 @@ void SoftSerialHandler::sendHeaderNavigationWithMain(bool doClean, char* headerM
   sserial.write(mainMessage);
   sserial.write("+");
 
-  sserial.write("$");
+  sserial.write("$");*/
 }
 
 void SoftSerialHandler::sendHeaderNavigationSmallLines(bool doClean, char* headerMessage, char* nav, char* sl1, char* sl2) {
-  sserial.write("&");
+  /*sserial.write("&");
   if (doClean) {
     sserial.write("C+");
   }
@@ -90,5 +103,5 @@ void SoftSerialHandler::sendHeaderNavigationSmallLines(bool doClean, char* heade
   sserial.write(sl2);
   sserial.write("+");
 
-  sserial.write("$");
+  sserial.write("$");*/
 }

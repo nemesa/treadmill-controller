@@ -52,11 +52,11 @@ void setup() {
   Serial.begin(9600);
   Serial.println(F("Setup"));
 
-  if (digitalRead(displayReadyPin) == 0) {
+  /*if (digitalRead(displayReadyPin) == 0) {
     while (digitalRead(displayReadyPin) != 1) {
       delay(100);
     }
-  }
+  }*/
 
   rh.setup();
   eh.setup();

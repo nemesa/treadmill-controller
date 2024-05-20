@@ -2,6 +2,7 @@
 #define SoftSerial_h
 
 #include <SoftwareSerial.h>
+#include "display.h"
 
 class SoftSerialHandler {
 public:
@@ -17,6 +18,7 @@ private:
   short _ssRx = 0;
   short _ssTx = 0;
   SoftwareSerial sserial = SoftwareSerial(0, 1);
+  DisplayHandler dh;
 };
 
 #endif
