@@ -17,6 +17,8 @@ void EEPROMHandler::setup() {
   defaultMap.speed30 = 4;
   defaultMap.speed60 = 5;
   defaultMap.speed100 = 6;
+  defaultMap.holdDelay = 7;
+  defaultMap.pressDelay = 10;
 
 
   if (EEPROM.read(0) == 255) {
@@ -36,6 +38,12 @@ void EEPROMHandler::setup() {
   }
   if (EEPROM.read(5) == 255) {
     EEPROM.update(5, defaultMap.speed100);
+  }
+  if (EEPROM.read(6) == 255) {
+    EEPROM.update(6, defaultMap.holdDelay);
+  }
+  if (EEPROM.read(7) == 255) {
+    EEPROM.update(7, defaultMap.pressDelay);
   }
 
 
@@ -121,6 +129,7 @@ UserDataStruct EEPROMHandler::readUser(uint8_t num) {
 }
 
 ControlPinMapStruct EEPROMHandler::getControlPinMap() {
+
   struct ControlPinMapStruct map;
   map.startStop = EEPROM.read(0);
   map.speedInc = EEPROM.read(1);
@@ -128,6 +137,26 @@ ControlPinMapStruct EEPROMHandler::getControlPinMap() {
   map.speed30 = EEPROM.read(3);
   map.speed60 = EEPROM.read(4);
   map.speed100 = EEPROM.read(5);
+  map.holdDelay = EEPROM.read(6);
+  map.pressDelay = EEPROM.read(7);
+
+
+  Serial.println(F("EEPROMHandler-getControlPinMap"));
+  Serial.print(map.startStop);
+  Serial.print(F(" - "));
+  Serial.print(map.speedInc);
+  Serial.print(F(" - "));
+  Serial.print(map.speedDec);
+  Serial.print(F(" - "));
+  Serial.print(map.speed30);
+  Serial.print(F(" - "));
+  Serial.print(map.speed60);
+  Serial.print(F(" - "));
+  Serial.print(map.speed100);
+  Serial.print(F(" - "));
+  Serial.print(map.holdDelay);
+  Serial.print(F(" - "));
+  Serial.println(map.pressDelay);
 
   return map;
 }
@@ -144,7 +173,11 @@ void EEPROMHandler::writeControlPinMap(struct ControlPinMapStruct map) {
   Serial.print(F(" - "));
   Serial.print(map.speed60);
   Serial.print(F(" - "));
-  Serial.println(map.speed100);
+  Serial.print(map.speed100);
+  Serial.print(F(" - "));
+  Serial.print(map.holdDelay);
+  Serial.print(F(" - "));
+  Serial.println(map.pressDelay);
 
   EEPROM.update(0, map.startStop);
   EEPROM.update(1, map.speedInc);
@@ -152,4 +185,6 @@ void EEPROMHandler::writeControlPinMap(struct ControlPinMapStruct map) {
   EEPROM.update(3, map.speed30);
   EEPROM.update(4, map.speed60);
   EEPROM.update(5, map.speed100);
+  EEPROM.update(6, map.holdDelay);
+  EEPROM.update(7, map.pressDelay);
 }

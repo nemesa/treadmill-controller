@@ -19,8 +19,8 @@ public:
     setUser(user.num);
 
     //setMenu(0, -1,-1);
-    setMenu(1, 1,-1);
-    //setMenu(5, 5, 0);
+    //setMenu(1, 1,-1);
+    setMenu(5, 5, 0);
   }
   void down() {
     if (menu == 0) {
@@ -28,46 +28,25 @@ public:
       ssh->sendMain(false, user.name);
 
     } else if (menu == 1) {
-      subMenu = subMenu + 1;
-      if (subMenu == 4) {
-        subMenu = 1;
-      }
+      subMenu = next(1, 3, subMenu, true, true);
       setMenu(1, subMenu, 0);
     } else if (menu == 4) {
-      subMenu = subMenu + 1;
-      if (subMenu == 30) {
-        subMenu = 1;
-      }
+      subMenu = next(1, 29, subMenu, true, true);
       setMenu(4, subMenu, 0);
     } else if (menu == 5 && subMenu < 10) {
-      subMenu = subMenu + 1;
-      if (subMenu == 6) {
-        subMenu = 1;
-      }
+      subMenu = next(1, 5, subMenu, true, true);
       setMenu(5, subMenu, 0);
     } else if (menu == 5 && subMenu == 20) {
-      walkSpeed = walkSpeed - 1;
-      if (walkSpeed == 0) {
-        walkSpeed = 1;
-      }
+      walkSpeed = next(1, 160, walkSpeed, true, false);
       ssh->sendMain(false, getSpeed(walkSpeed));
     } else if (menu == 5 && subMenu == 30) {
-      runSpeed = runSpeed - 1;
-      if (runSpeed == 0) {
-        runSpeed = 1;
-      }
+      runSpeed = next(1, 160, runSpeed, true, false);
       ssh->sendMain(false, getSpeed(runSpeed));
     } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
-      subMenu = subMenu + 1;
-      if (subMenu == 47) {
-        subMenu = 41;
-      }
+      subMenu = next(41, 46, subMenu, true, true);
       setMenu(5, subMenu, 0);
     } else if (menu == 5 && subMenu > 50 && subMenu <= 59) {
-      subMenu = subMenu + 1;
-      if (subMenu == 57) {
-        subMenu = 51;
-      }
+      subMenu = next(51, 56, subMenu, true, true);
       setMenu(5, subMenu, 0);
     }
   }
@@ -76,46 +55,25 @@ public:
       readPrevUser();
       ssh->sendMain(false, user.name);
     } else if (menu == 1) {
-      subMenu = subMenu - 1;
-      if (subMenu == 0) {
-        subMenu = 3;
-      }
+      subMenu = next(1, 3, subMenu, false, true);
       setMenu(1, subMenu, 0);
     } else if (menu == 4) {
-      subMenu = subMenu - 1;
-      if (subMenu == 0) {
-        subMenu = 29;
-      }
+      subMenu = next(1, 29, subMenu, false, true);
       setMenu(4, subMenu, 0);
     } else if (menu == 5 && subMenu < 10) {
-      subMenu = subMenu - 1;
-      if (subMenu == 0) {
-        subMenu = 5;
-      }
+      subMenu = next(1, 5, subMenu, false, true);
       setMenu(5, subMenu, 0);
     } else if (menu == 5 && subMenu == 20) {
-      walkSpeed = walkSpeed + 1;
-      if (walkSpeed == 161) {
-        walkSpeed = 160;
-      }
+      walkSpeed = next(1, 160, walkSpeed, false, false);
       ssh->sendMain(false, getSpeed(walkSpeed));
     } else if (menu == 5 && subMenu == 30) {
-      runSpeed = runSpeed + 1;
-      if (runSpeed == 161) {
-        runSpeed = 160;
-      }
+      runSpeed = next(1, 160, runSpeed, false, false);
       ssh->sendMain(false, getSpeed(runSpeed));
     } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
-      subMenu = subMenu - 1;
-      if (subMenu == 40) {
-        subMenu = 46;
-      }
+      subMenu = next(41, 46, subMenu, false, true);
       setMenu(5, subMenu, 0);
     } else if (menu == 5 && subMenu > 50 && subMenu <= 59) {
-      subMenu = subMenu - 1;
-      if (subMenu == 50) {
-        subMenu = 56;
-      }
+      subMenu = next(51, 56, subMenu, false, true);
       setMenu(5, subMenu, 0);
     }
   }
@@ -127,7 +85,19 @@ public:
     } else if (menu == 4) {
       setMenu(1, 2, 0);
     } else if (menu == 5) {
-      setMenu(1, 3, 0);
+      if (subMenu > 50 && subMenu <= 59) {
+        if (subMenu2 == 1) {
+          setMenu(5, 5, 0);
+        } else {
+          subMenu2 = subMenu2 - 1;
+          if (subMenu2 == 0) {
+            subMenu2 = 1;
+          }
+          setMenu(5, subMenu, subMenu2);
+        }
+      } else {
+        setMenu(1, 3, 0);
+      }
     } else if (menu == 6 && (subMenu == 3 || subMenu == 1)) {
       setMenu(1, 1, 0);
     }
@@ -179,7 +149,7 @@ public:
         setMenu(5, 3, 0);
       } else if (subMenu > 40 && subMenu <= 49) {
         uint8_t pinNo = subMenu - 40;
-        rh->pinTest(pinNo);
+        rh->pinTest(&pinMap, pinNo);
       } else if (subMenu == 51) {
         pinMap.startStop = subMenu2;
         eh->writeControlPinMap(pinMap);
@@ -452,9 +422,10 @@ private:
 
     char* result = "00.0";
     if (speed < 100) {
-      result[0] = ' ';
+      result[0] = (char)32;  //SPACE
     }
     if (speed < 10) {
+      result[1] = (char)48;  //0
       result[3] = (char)(48 + speed);
     } else {
       if (speed > 100) {
@@ -574,6 +545,28 @@ private:
     user = eh->readUser(num);
     walkSpeed = user.walkSpeed;
     runSpeed = user.runSpeed;
+  }
+  uint8_t next(uint8_t min, uint8_t max, uint8_t current, bool isUp, bool allowOverFlow) {
+    if (isUp) {
+      current++;
+      if (current > max) {
+        if (allowOverFlow) {
+          current = min;
+        } else {
+          current = max;
+        }
+      }
+    } else {
+      current--;
+      if (current < min) {
+        if (allowOverFlow) {
+          current = max;
+        } else {
+          current = min;
+        }
+      }
+    }
+    return current;
   }
   UserDataStruct user;
   ControlPinMapStruct pinMap;

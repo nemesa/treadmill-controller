@@ -8,6 +8,8 @@ struct ControlPinMapStruct {
   uint8_t speed30;
   uint8_t speed60;
   uint8_t speed100;
+  uint8_t holdDelay;
+  uint8_t pressDelay;
   
 };
 

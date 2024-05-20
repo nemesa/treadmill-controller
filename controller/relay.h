@@ -11,7 +11,7 @@ public:
   void start(ControlPinMapStruct* pinMap);
   void stop(ControlPinMapStruct* pinMap);
   void toSpeed(ControlPinMapStruct* pinMap, uint8_t speed);
-  void pinTest(uint8_t pinNo);
+  void pinTest(ControlPinMapStruct* pinMap, uint8_t pinNo);
 private:
   uint8_t currentSpeed = 0;
   bool isRunning = false;
@@ -21,7 +21,7 @@ private:
   int _pin4 = 0;
   int _pin5 = 0;
   int _pin6 = 0;
-  void sendSignal(uint8_t pinNo);
+  void sendSignal(ControlPinMapStruct* pinMap, uint8_t pinNo);
 };
 
 #endif

@@ -28,7 +28,7 @@ void RelayHandler::start(ControlPinMapStruct* pinMap) {
   if (!isRunning) {
     isRunning = true;
     currentSpeed = 10;
-    sendSignal(pinMap->startStop);
+    sendSignal(pinMap, pinMap->startStop);
   }
 }
 
@@ -37,7 +37,7 @@ void RelayHandler::stop(ControlPinMapStruct* pinMap) {
   if (isRunning) {
     isRunning = false;
     currentSpeed = 0;
-    sendSignal(pinMap->startStop);
+    sendSignal(pinMap, pinMap->startStop);
   }
 }
 void RelayHandler::toSpeed(ControlPinMapStruct* pinMap, uint8_t speed) {
@@ -47,14 +47,14 @@ void RelayHandler::toSpeed(ControlPinMapStruct* pinMap, uint8_t speed) {
 
   if (speed < 45) {
     currentSpeed = 30;
-    sendSignal(pinMap->speed30);
-    
+    sendSignal(pinMap, pinMap->speed30);
+
   } else if (speed < 75) {
     currentSpeed = 60;
-    sendSignal(pinMap->speed60);
+    sendSignal(pinMap, pinMap->speed60);
   } else {
     currentSpeed = 100;
-    sendSignal(pinMap->speed100);
+    sendSignal(pinMap, pinMap->speed100);
   }
 
   if (currentSpeed != speed) {
@@ -75,28 +75,26 @@ void RelayHandler::toSpeed(ControlPinMapStruct* pinMap, uint8_t speed) {
     for (int i = 0; i < numberToTarget; i++) {
       if (currentSpeed > speed) {
         currentSpeed--;
-        sendSignal(pinMap->speedDec);
+        sendSignal(pinMap, pinMap->speedDec);
       } else {
         currentSpeed++;
-        sendSignal(pinMap->speedInc);
+        sendSignal(pinMap, pinMap->speedInc);
       }
-
-    //  delay(100);
     }
   }
 }
 
-void RelayHandler::pinTest(uint8_t pinNo) {
+void RelayHandler::pinTest(ControlPinMapStruct* pinMap, uint8_t pinNo) {
   Serial.print(F("RelayHandler-pinTest "));
   Serial.println(pinNo);
   if (pinNo > 0 && pinNo < 7) {
-    sendSignal(pinNo);
+    sendSignal(pinMap, pinNo);
   } else {
-    sendSignal(1);
+    sendSignal(pinMap, 1);
   }
 }
 
-void RelayHandler::sendSignal(uint8_t pinNo) {
+void RelayHandler::sendSignal(ControlPinMapStruct* pinMap, uint8_t pinNo) {
   Serial.print(F("RelayHandler-sendSignal on pin:"));
   Serial.print(pinNo);
   Serial.print(F(" currentSpeed:"));
@@ -121,7 +119,7 @@ void RelayHandler::sendSignal(uint8_t pinNo) {
 
 
   digitalWrite(pin, HIGH);
-  delay(70);
+  delay(pinMap->holdDelay * 10);
   digitalWrite(pin, LOW);
-  delay(100);
+  delay(pinMap->pressDelay * 10);
 }
