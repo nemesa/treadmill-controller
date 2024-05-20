@@ -112,8 +112,7 @@ private:
   char* get5KTraining(uint8_t week) {
     char* result;
     if (week == 1 || week == 2) {
-      result = "1W|[2|1R|1W]";
-      //result = "2W|[5|1R|1W]";
+      result = "2W|[5|1R|1W]";
     } else if (week == 3 || week == 4) {
       result = "2W|[8|1R|1W]|1W";
     } else if (week == 4) {
@@ -180,17 +179,22 @@ private:
     }
   }
   char* other(uint8_t id) {
-    char* result;
+    char* result = "00W";
     if (id == 25) {
-      result = "30W";
+      result[0] = '3';
+      result[1] = '0';
     } else if (id == 26) {
-      result = "45W";
+      result[0] = '4';
+      result[1] = '5';
     } else if (id == 27) {
-      result = "60W";
+      result[0] = '6';
+      result[1] = '0';
     } else if (id == 28) {
-      result = "75W";
+      result[0] = '7';
+      result[1] = '5';
     } else if (id == 29) {
-      result = "90W";
+      result[0] = '9';
+      result[1] = '0';
     } else {
       result = "";
     }

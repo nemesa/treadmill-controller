@@ -9,7 +9,7 @@ EEPROMHandler::EEPROMHandler() {
 
 void EEPROMHandler::setup() {
   Serial.println(F("EEPROMHandler-setup"));
-
+  
   struct ControlPinMapStruct defaultMap;
   defaultMap.startStop = 1;
   defaultMap.speedInc = 2;
