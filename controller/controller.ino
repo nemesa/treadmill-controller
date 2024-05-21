@@ -2,16 +2,16 @@
 //SCL -> A5
 //SDA -> A4
 
-#define relayPin1 13
-#define relayPin2 12
-#define relayPin3 11
-#define relayPin4 10
-#define relayPin5 9
-#define relayPin6 8
+#define relayPin1 7
+#define relayPin2 6
+#define relayPin3 5
+#define relayPin4 4
+#define relayPin5 3
+#define relayPin6 2
 
-#define jSW 7
-#define jX A0
+#define jSW A0
 #define jY A1
+#define jX A2
 
 
 #include "joystick.h"
