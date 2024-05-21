@@ -2,37 +2,33 @@
 //SCL -> A5
 //SDA -> A4
 
+#define relayPin1 13
+#define relayPin2 12
+#define relayPin3 11
+#define relayPin4 10
+#define relayPin5 9
+#define relayPin6 8
+
+#define jSW 7
 #define jX A0
 #define jY A1
-#define jSW 4
-#define ssTxPin 13
-#define ssRxPin 12
-#define displayReadyPin 11
-#define relayPin1 10
-#define relayPin2 9
-#define relayPin3 8
-#define relayPin4 7
-#define relayPin5 6
-#define relayPin6 5
 
 
 #include "joystick.h"
 #include "menu.cpp"
 #include "relay.h"
 #include "eeprom.h"
-#include "softserial.h"
+#include "display.h"
 
 JoystickHandler jh(jX, jY, jSW);
 MenuHandler mh;
 RelayHandler rh(relayPin1, relayPin2, relayPin3, relayPin4, relayPin5, relayPin6);
 EEPROMHandler eh;
-SoftSerialHandler ssh(ssRxPin, ssTxPin);
+DisplayHandler dh;
 struct JoystickState js;
 bool inTimer = false;
 
 void setup() {
-  pinMode(displayReadyPin, INPUT);
-
   cli();  //stop interrupts
 
   TCCR1A = 0;  // set entire TCCR1A register to 0
@@ -49,21 +45,14 @@ void setup() {
 
   sei();  //allow interrupts
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println(F("Setup"));
-
-  if (digitalRead(displayReadyPin) == 0) {
-    while (digitalRead(displayReadyPin) != 1) {
-      delay(100);
-    }
-  }
-
   rh.setup();
   eh.setup();
   jh.setup(&js);
-  ssh.setup();
+  dh.setup();
 
-  mh.setup(&eh, &rh, &ssh, ssRxPin, ssTxPin);
+  mh.setup(&eh, &rh, &dh);
 }
 
 
