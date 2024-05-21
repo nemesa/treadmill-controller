@@ -27,21 +27,10 @@ void DisplayHandler::cleanAll() {
   display.fillRect(0, 0, 127, 31, BLACK);
   display.display();
 }
-void DisplayHandler::debug(char* text) {
-  display.setTextSize(1);
-  display.fillRect(0, 0, 127, 8, BLACK);
-  display.setCursor(0, 0);
-  display.println(text);
-  display.display();
-}
-void DisplayHandler::debug2(char* text) {
-  display.setTextSize(1);
-  display.fillRect(0, 0, 10, 8, BLACK);
-  display.setCursor(0, 0);
-  display.println(text);
-  display.display();
-}
-void DisplayHandler::header(char* text) {
+void DisplayHandler::header(bool doClean, char* text) {
+  if (doClean) {
+    display.fillRect(0, 0, 127, 31, BLACK);
+  }
   display.setTextSize(1);
   display.fillRect(0, 0, 127, 8, BLACK);
   display.setCursor(0, 0);
@@ -49,7 +38,10 @@ void DisplayHandler::header(char* text) {
   display.drawFastHLine(0, 9, 127, WHITE);
   display.display();
 }
-void DisplayHandler::main(char* text) {
+void DisplayHandler::main(bool doClean, char* text) {
+  if (doClean) {
+    display.fillRect(0, 0, 127, 31, BLACK);
+  }
   display.setTextSize(2);
   display.fillRect(7, 14, 117, 15, BLACK);
   display.setCursor(7, 14);
@@ -98,3 +90,63 @@ void DisplayHandler::navigationOptions(bool hasUp, bool hasLeft, bool hasDown, b
 
   display.display();
 }
+
+
+void DisplayHandler::headerWithMain(bool doClean, char* headerMessage, char* mainMessage) {
+  if (doClean) {
+    display.fillRect(0, 0, 127, 31, BLACK);
+  }
+
+  display.setTextSize(1);
+  display.fillRect(0, 0, 127, 8, BLACK);
+  display.setCursor(0, 0);
+  display.println(headerMessage);
+  display.drawFastHLine(0, 9, 127, WHITE);
+
+  display.setTextSize(2);
+  display.fillRect(7, 14, 117, 15, BLACK);
+  display.setCursor(7, 14);
+  display.println(mainMessage);
+  display.display();
+};
+
+void DisplayHandler::headerNavigationWithMain(bool doClean, char* headerMessage, bool hasNavUp, bool hasNavLeft, bool hasNavDown, bool hasNavRight, char* mainMessage) {
+  if (doClean) {
+    display.fillRect(0, 0, 127, 31, BLACK);
+  }
+
+  display.setTextSize(1);
+  display.fillRect(0, 0, 127, 8, BLACK);
+  display.setCursor(0, 0);
+  display.println(headerMessage);
+  display.drawFastHLine(0, 9, 127, WHITE);
+
+  display.setTextSize(2);
+  display.fillRect(7, 14, 117, 15, BLACK);
+  display.setCursor(7, 14);
+  display.println(mainMessage);
+  display.display();
+
+  navigationOptions(hasNavUp, hasNavLeft, hasNavDown, hasNavRight);
+};
+void DisplayHandler::headerNavigationSmallLines(bool doClean, char* headerMessage, bool hasNavUp, bool hasNavLeft, bool hasNavDown, bool hasNavRight, char* sl1, char* sl2) {
+  if (doClean) {
+    display.fillRect(0, 0, 127, 31, BLACK);
+  }
+
+  display.setTextSize(1);
+  display.fillRect(0, 0, 127, 8, BLACK);
+  display.setCursor(0, 0);
+  display.println(headerMessage);
+  display.drawFastHLine(0, 9, 127, WHITE);
+
+  display.fillRect(7, 14, 117, 8, BLACK);
+  display.setCursor(7, 14);
+  display.println(sl1);
+
+  display.fillRect(7, 22, 117, 7, BLACK);
+  display.setCursor(7, 22);
+  display.println(sl2);
+
+  navigationOptions(hasNavUp, hasNavLeft, hasNavDown, hasNavRight);
+};

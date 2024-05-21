@@ -2,9 +2,6 @@
 //SCL -> A5
 //SDA -> A4
 
-#define jX A0
-#define jY A1
-#define jSW 7
 #define relayPin1 13
 #define relayPin2 12
 #define relayPin3 11
@@ -12,18 +9,22 @@
 #define relayPin5 9
 #define relayPin6 8
 
+#define jSW 7
+#define jX A0
+#define jY A1
+
 
 #include "joystick.h"
 #include "menu.cpp"
 #include "relay.h"
 #include "eeprom.h"
-#include "softserial.h"
+#include "display.h"
 
 JoystickHandler jh(jX, jY, jSW);
 MenuHandler mh;
 RelayHandler rh(relayPin1, relayPin2, relayPin3, relayPin4, relayPin5, relayPin6);
 EEPROMHandler eh;
-SoftSerialHandler ssh;
+DisplayHandler dh;
 struct JoystickState js;
 bool inTimer = false;
 
@@ -49,9 +50,9 @@ void setup() {
   rh.setup();
   eh.setup();
   jh.setup(&js);
-  ssh.setup();
+  dh.setup();
 
-  mh.setup(&eh, &rh, &ssh);
+  mh.setup(&eh, &rh, &dh);
 }
 
 

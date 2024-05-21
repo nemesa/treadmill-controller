@@ -2,16 +2,16 @@
 #include "relay.h"
 #include "eeprom.h"
 #include "workout.cpp"
-#include "softserial.h"
+#include "display.h"
 
 class MenuHandler {
 public:
 
-  void setup(EEPROMHandler* eepromHAndler, RelayHandler* relayHandler, SoftSerialHandler* softSerialHandler) {
+  void setup(EEPROMHandler* eepromHAndler, RelayHandler* relayHandler, DisplayHandler* displayHandler) {
     Serial.println(F("MenuHandler-setup"));
     rh = relayHandler;
     eh = eepromHAndler;
-    ssh = softSerialHandler;
+    dh = displayHandler;
     user = eh->getLastSelectedUser();
     pinMap = eh->getControlPinMap();
 
@@ -24,7 +24,7 @@ public:
   void down() {
     if (menu == 0) {
       readNextUser();
-      ssh->sendMain(false, user.name);
+      dh->main(false, user.name);
 
     } else if (menu == 1) {
       subMenu = next(1, 3, subMenu, true, true);
@@ -40,10 +40,10 @@ public:
       setMenu(5, subMenu, subMenu2);
     } else if (menu == 5 && subMenu == 20) {
       walkSpeed = next(1, 160, walkSpeed, false, false);
-      ssh->sendMain(false, getSpeed(walkSpeed));
+      dh->main(false, getSpeed(walkSpeed));
     } else if (menu == 5 && subMenu == 30) {
       runSpeed = next(1, 160, runSpeed, false, false);
-      ssh->sendMain(false, getSpeed(runSpeed));
+      dh->main(false, getSpeed(runSpeed));
     } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
       subMenu = next(41, 46, subMenu, true, true);
       setMenu(5, subMenu, 0);
@@ -55,7 +55,7 @@ public:
   void up() {
     if (menu == 0) {
       readPrevUser();
-      ssh->sendMain(false, user.name);
+      dh->main(false, user.name);
     } else if (menu == 1) {
       subMenu = next(1, 3, subMenu, false, true);
       setMenu(1, subMenu, 0);
@@ -70,10 +70,10 @@ public:
       setMenu(5, subMenu, subMenu2);
     } else if (menu == 5 && subMenu == 20) {
       walkSpeed = next(1, 160, walkSpeed, true, false);
-      ssh->sendMain(false, getSpeed(walkSpeed));
+      dh->main(false, getSpeed(walkSpeed));
     } else if (menu == 5 && subMenu == 30) {
       runSpeed = next(1, 160, runSpeed, true, false);
-      ssh->sendMain(false, getSpeed(runSpeed));
+      dh->main(false, getSpeed(runSpeed));
     } else if (menu == 5 && subMenu > 40 && subMenu <= 49) {
       subMenu = next(41, 46, subMenu, false, true);
       setMenu(5, subMenu, 0);
@@ -213,7 +213,7 @@ public:
 
           char* timeToShow = "X: 00:00";
           getTime(timeToShow, workoutSection, timeTick);
-          ssh->sendMain(false, timeToShow);
+          dh->main(false, timeToShow);
 
           short currentTarget = workoutTimers[workoutSection];
           if (isRunningInSection(workoutSection)) {
@@ -226,7 +226,7 @@ public:
           if (timeLeft <= 0) {
             timeTick = -1;
             workoutSection++;
-            ssh->sendHeader(false, getWorkoutHeader(workoutSection));
+            dh->header(false, getWorkoutHeader(workoutSection));
             if (workoutTimers[workoutSection] == 0) {
               setMenu(6, 4, 0);
             } else {
@@ -257,10 +257,10 @@ public:
             if (startTimeTick == 5) {
               char* timeToShowAtStart = "Y: 00:00";
               getTime(timeToShowAtStart, workoutSection, timeTick);
-              ssh->sendHeaderWithMain(false, getWorkoutHeader(workoutSection), timeToShowAtStart);
+              dh->headerWithMain(false, getWorkoutHeader(workoutSection), timeToShowAtStart);
               hasWorkoutStarted = true;
             } else {
-              ssh->sendMain(false, num);
+              dh->main(false, num);
             }
           }
           startTimeTick++;
@@ -291,96 +291,96 @@ private:
     Serial.print(F(" "));
     Serial.println(subMenu2);
     if (menu == 0) {
-      ssh->sendHeaderNavigationWithMain(doCleanAll, "Welcome!", true, false, true, false, user.name);
+      dh->headerNavigationWithMain(doCleanAll, "Welcome!", true, false, true, false, user.name);
     } else if (menu == 1) {
       if (subMenu == 1) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", true, true, true, true, "Start Last Selected:", wh.getNameById(user.lastSelection));
+        dh->headerNavigationSmallLines(doCleanAll, "Select Workout!", true, true, true, true, "Start Last Selected:", wh.getNameById(user.lastSelection));
       } else if (subMenu == 2) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", true, true, true, false, "Other Workouts", "");
+        dh->headerNavigationSmallLines(doCleanAll, "Select Workout!", true, true, true, false, "Other Workouts", "");
       } else if (subMenu == 3) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Select Workout!", true, true, true, false, "User Settings", "");
+        dh->headerNavigationSmallLines(doCleanAll, "Select Workout!", true, true, true, false, "User Settings", "");
       }
     } else if (menu == 3) {
-      ssh->sendHeaderNavigationSmallLines(doCleanAll, "Last Workout Details:", false, true, false, false, wh.getNameById(user.lastSelection), wh.getById(user.lastSelection));
+      dh->headerNavigationSmallLines(doCleanAll, "Last Workout Details:", false, true, false, false, wh.getNameById(user.lastSelection), wh.getById(user.lastSelection));
 
     } else if (menu == 4) {
-      ssh->sendHeaderNavigationSmallLines(doCleanAll, "Other workouts:", true, true, true, false, wh.getNameById(subMenu), wh.getById(subMenu));
+      dh->headerNavigationSmallLines(doCleanAll, "Other workouts:", true, true, true, false, wh.getNameById(subMenu), wh.getById(subMenu));
     } else if (menu == 5) {
       if (subMenu == 1) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", true, true, true, true, "Name", user.name);
+        dh->headerNavigationSmallLines(doCleanAll, "Settings:", true, true, true, true, "Name", user.name);
       } else if (subMenu == 10) {
         char* indicator = "^^^^^^^";
         for (int i = 0; i <= 6; i++) {
           indicator[i] = subMenu2 != i ? (char)32 : (char)94;  // SPACE OR ^
         }
 
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Name:", true, true, true, false, user.name, indicator);
+        dh->headerNavigationSmallLines(doCleanAll, "Name:", true, true, true, false, user.name, indicator);
       } else if (subMenu == 2) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Walk Speed:", getSpeed(user.walkSpeed));
+        dh->headerNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Walk Speed:", getSpeed(user.walkSpeed));
       } else if (subMenu == 20) {
-        ssh->sendHeaderNavigationWithMain(doCleanAll, "Walk Speed:", true, true, true, false, getSpeed(user.walkSpeed));
+        dh->headerNavigationWithMain(doCleanAll, "Walk Speed:", true, true, true, false, getSpeed(user.walkSpeed));
       } else if (subMenu == 3) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Run Speed:", getSpeed(user.runSpeed));
+        dh->headerNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Run Speed:", getSpeed(user.runSpeed));
       } else if (subMenu == 30) {
-        ssh->sendHeaderNavigationWithMain(doCleanAll, "Run Speed:", true, true, true, false, getSpeed(user.runSpeed));
+        dh->headerNavigationWithMain(doCleanAll, "Run Speed:", true, true, true, false, getSpeed(user.runSpeed));
       } else if (subMenu == 4) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Control pin test", "");
+        dh->headerNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Control pin test", "");
       } else if (subMenu > 40 && subMenu <= 46) {
         uint8_t pinNo = subMenu - 40;
         char* pinNoStr = "  Pin:0";
         pinNoStr[6] = (char)(48 + pinNo);
-        ssh->sendHeaderNavigationWithMain(doCleanAll, "Control pin test:", true, true, true, false, pinNoStr);
+        dh->headerNavigationWithMain(doCleanAll, "Control pin test:", true, true, true, false, pinNoStr);
       } else if (subMenu == 5) {
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Control pin setup", "");
+        dh->headerNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Control pin setup", "");
       } else if (subMenu == 51) {
         if (subMenu2 == 0) {
           subMenu2 = pinMap.startStop;
         }
         char* pinNoStr = "  Pin:0";
         pinNoStr[6] = (char)(48 + subMenu2);
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Start/Stop", pinNoStr);
+        dh->headerNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Start/Stop", pinNoStr);
       } else if (subMenu == 52) {
         if (subMenu2 == 0) {
           subMenu2 = pinMap.speedInc;
         }
         char* pinNoStr = "  Pin:0";
         pinNoStr[6] = (char)(48 + subMenu2);
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed inc. 0.1", pinNoStr);
+        dh->headerNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed inc. 0.1", pinNoStr);
       } else if (subMenu == 53) {
         if (subMenu2 == 0) {
           subMenu2 = pinMap.speedDec;
         }
         char* pinNoStr = "  Pin:0";
         pinNoStr[6] = (char)(48 + subMenu2);
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed dec. 0.1", pinNoStr);
+        dh->headerNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed dec. 0.1", pinNoStr);
       } else if (subMenu == 54) {
         if (subMenu2 == 0) {
           subMenu2 = pinMap.speed30;
         }
         char* pinNoStr = "  Pin:0";
         pinNoStr[6] = (char)(48 + subMenu2);
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed to 3.0", pinNoStr);
+        dh->headerNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed to 3.0", pinNoStr);
       } else if (subMenu == 55) {
         if (subMenu2 == 0) {
           subMenu2 = pinMap.speed60;
         }
         char* pinNoStr = "  Pin:0";
         pinNoStr[6] = (char)(48 + subMenu2);
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed to 6.0", pinNoStr);
+        dh->headerNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed to 6.0", pinNoStr);
       } else if (subMenu == 56) {
         if (subMenu2 == 0) {
           subMenu2 = pinMap.speed100;
         }
         char* pinNoStr = "  Pin:0";
         pinNoStr[6] = (char)(48 + subMenu2);
-        ssh->sendHeaderNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed to 10.0", pinNoStr);
+        dh->headerNavigationSmallLines(doCleanAll, "Control pin setup:", true, true, true, true, "Speed to 10.0", pinNoStr);
       }
     } else if (menu = 6) {
       if (subMenu == 1) {
         hasWorkoutStarted = false;
         timeTick = 0;
         workoutSection = 0;
-        ssh->sendHeaderNavigationWithMain(false, wh.getNameById(user.lastSelection), false, true, false, false, "START");
+        dh->headerNavigationWithMain(false, wh.getNameById(user.lastSelection), false, true, false, false, "START");
         for (uint8_t i = 0; i < 20; i++) {
           workoutTimers[i] = 0;
         }
@@ -395,19 +395,19 @@ private:
       if (subMenu == 2) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        ssh->sendHeader(true, "starting...");
+        dh->header(true, "starting...");
         rh->start(&pinMap);
       }
       if (subMenu == 3) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
         rh->stop(&pinMap);
-        ssh->sendHeaderNavigationWithMain(doCleanAll, "Paused", false, true, false, false, "START");
+        dh->headerNavigationWithMain(doCleanAll, "Paused", false, true, false, false, "START");
       }
       if (subMenu == 4) {
         hasWorkoutStarted = false;
         startTimeTick = 0;
-        ssh->sendHeaderWithMain(false, "Finished!", "EXIT");
+        dh->headerWithMain(false, "Finished!", "EXIT");
         rh->stop(&pinMap);
       }
     }
@@ -599,7 +599,7 @@ private:
   ControlPinMapStruct pinMap;
   EEPROMHandler* eh;
   WorkoutHandler wh;
-  SoftSerialHandler* ssh;
+  DisplayHandler* dh;
   RelayHandler* rh;
   short workoutTimers[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 };
