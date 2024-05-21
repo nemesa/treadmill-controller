@@ -38,7 +38,16 @@ void JoystickHandler::loop(JoystickState* state) {
 
   int x = analogRead(_pinX);
   int y = analogRead(_pinY);
-  if (digitalRead(_pinSW) == 0) {
+  int sw = digitalRead(_pinSW);
+/*
+  Serial.print(F("JoystickHandler-loop x:"));
+  Serial.print(x);
+  Serial.print(F(" y:"));
+  Serial.print(y);
+  Serial.print(F(" sw:"));
+  Serial.println(sw);*/
+
+  if (sw== 0) {
 
     if (!_isSW) {
       _lastButtonPress = millis();
@@ -107,7 +116,7 @@ void JoystickHandler::rightReleased(JoystickState* state) {
   state->isSWReleased = false;
   state->isRightReleased = true;
 
-  //Serial.println(F("rightReleased"));
+  Serial.println(F("rightReleased"));
 }
 void JoystickHandler::leftReleased(JoystickState* state) {
   state->isRightReleased = false;
@@ -116,7 +125,7 @@ void JoystickHandler::leftReleased(JoystickState* state) {
   state->isSWReleased = false;
   state->isLeftReleased = true;
 
-  //Serial.println(F("leftReleased"));
+  Serial.println(F("leftReleased"));
 }
 void JoystickHandler::upReleased(JoystickState* state) {
   state->isLeftReleased = false;
@@ -125,7 +134,7 @@ void JoystickHandler::upReleased(JoystickState* state) {
   state->isSWReleased = false;
   state->isUpReleased = true;
 
-  //Serial.println(F("upReleased"));
+  Serial.println(F("upReleased"));
 }
 void JoystickHandler::downReleased(JoystickState* state) {
   state->isLeftReleased = false;
@@ -134,7 +143,7 @@ void JoystickHandler::downReleased(JoystickState* state) {
   state->isSWReleased = false;
   state->isDownReleased = true;
 
-  //Serial.println(F("downReleased"));
+  Serial.println(F("downReleased"));
 }
 void JoystickHandler::swReleased(JoystickState* state) {
   _isSW = false;
@@ -144,5 +153,5 @@ void JoystickHandler::swReleased(JoystickState* state) {
   state->isUpReleased = false;
   state->isDownReleased = false;
   state->isSWReleased = true;
-  //Serial.println(F("swReleased"));
+  Serial.println(F("swReleased"));
 }
