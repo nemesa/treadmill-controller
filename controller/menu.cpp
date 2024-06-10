@@ -448,19 +448,19 @@ class MenuHandler {
         name[2] = 'l';
         name[3] = 'e';
         name[4] = 'c';
-        name[5] = 't';  
-        name[6] = ':';       
-      }else if (menu == menuSettings) {
-          name[0] = 'S';
-          name[1] = 'e';
-          name[2] = 't';
-          name[3] = 't';
-          name[4] = 'i';
-          name[5] = 'n';
-          name[6] = 'g';
-          name[7] = 's';
-          name[8] = ':';
-        }
+        name[5] = 't';
+        name[6] = ':';
+      } else if (menu == menuSettings) {
+        name[0] = 'S';
+        name[1] = 'e';
+        name[2] = 't';
+        name[3] = 't';
+        name[4] = 'i';
+        name[5] = 'n';
+        name[6] = 'g';
+        name[7] = 's';
+        name[8] = ':';
+      }
       return name;
     }
     void render(bool doCleanAll) {
@@ -539,7 +539,7 @@ class MenuHandler {
           dh->headerNavigationWithMain(doCleanAll, getHeader(), true, true, true, false, getDelay(subMenu2));
         }
       } else if (menu == menuUserSelector) {
-        
+
         dh->headerNavigationWithMain(doCleanAll, "Welcome!", true, true, true, false, user.name);
         dh->main(false, user.name);
       } else if (menu == menuMain) {
@@ -557,7 +557,8 @@ class MenuHandler {
         dh->headerNavigationSmallLines(doCleanAll, "Other workouts:", true, true, true, false, wh.getNameById(subMenu), wh.getById(subMenu));
       } else if (menu == menuSettings) {
         if (subMenu == 1) {
-          dh->headerNavigationSmallLines(doCleanAll, getHeader(), true, true, true, false, "Name", user.name);
+          user = eh->getLastSelectedUser();
+          dh->headerNavigationSmallLines(doCleanAll, "Settings:", true, true, true, false, "Name", user.name);
         } else if (subMenu == 10) {
           char* indicator = "^^^^^^^";
           for (int i = 0; i <= 6; i++) {
