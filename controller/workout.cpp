@@ -118,7 +118,7 @@ private:
     }
     Serial.println(result);
     if (week == 1 || week == 2) {
-      //"2W|[5|1R|1W]"
+      //"2W|[5|1R|2W]"
       result[0] = '2';
       result[1] = 'W';
       result[2] = '|';
@@ -128,7 +128,7 @@ private:
       result[6] = '1';
       result[7] = 'R';
       result[8] = '|';
-      result[9] = '1';
+      result[9] = '2';
       result[10] = 'W';
       result[11] = ']';
     } else if (week == 3 || week == 4) {
