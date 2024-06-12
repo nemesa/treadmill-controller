@@ -7,6 +7,8 @@
 
 I had two problems with my tredmill which I solved with a hardware button hack and an arudino uno.
 
+[youtube video - during operation ](https://www.youtube.com/watch?v=EVUXpr3S0uo)
+
 - Problem 1:
 Speed setup
 
