@@ -1,8 +1,11 @@
 # treadmill-controller
 
+## Try it in browser with a simulated arduino!
+[Wokwi project](https://wokwi.com/projects/400015246220451841)
+
 ## Why is this project created?
 
-I had two problems with my tredmill which I solved with a harware button hack and an arudino uno.
+I had two problems with my tredmill which I solved with a hardware button hack and an arudino uno.
 
 - Problem 1:
 Speed setup
@@ -47,3 +50,51 @@ So if we take week 3 which is a:
 2 min walk then 8X (1 min run then 1 min walk) then 1 min walk  
 then would need to keep track of time and change between run and walk speed **18 times** and if you keep in mind the button press problem if you are an unfortunate invidual who walks at a speed of 4.5 Km/h and runs ant 7.5 Km/h then you will press buttons a woppin **15 x 18 = 270** times.  
 This problem was screeaming for automation.
+
+
+
+![tredmill_panel](./project-pictures/button_hack_01.jpg)
+![tredmill_panel](./project-pictures/button_hack_02.jpg)
+![tredmill_panel](./project-pictures/button_hack_03.jpg)
+
+![tredmill_panel](./project-pictures/prototype_01.jpg)
+![tredmill_panel](./project-pictures/prototype_02.jpg)
+![tredmill_panel](./project-pictures/prototype_03.jpg)
+![tredmill_panel](./project-pictures/prototype_04.jpg)
+![tredmill_panel](./project-pictures/prototype_05.jpg)
+![tredmill_panel](./project-pictures/prototype_06.jpg)
+![tredmill_panel](./project-pictures/prototype_07.jpg)
+
+
+![tredmill_panel](./project-pictures/pcb_empty.jpg)
+![tredmill_panel](./project-pictures/pck_finished.jpg)
+
+
+![tredmill_panel](./project-pictures/assembly_01.jpg)
+![tredmill_panel](./project-pictures/assembly_02.jpg)
+![tredmill_panel](./project-pictures/assembly_03.jpg)
+![tredmill_panel](./project-pictures/assembly_04.jpg)
+![tredmill_panel](./project-pictures/assembly_05.jpg)
+![tredmill_panel](./project-pictures/assembly_06.jpg)
+![tredmill_panel](./project-pictures/assembly_07.jpg)
+![tredmill_panel](./project-pictures/assembly_08.jpg)
+![tredmill_panel](./project-pictures/assembly_09.jpg)
+![tredmill_panel](./project-pictures/assembly_10.jpg)
+![tredmill_panel](./project-pictures/assembly_11.jpg)
+![tredmill_panel](./project-pictures/assembly_13.jpg)
+![tredmill_panel](./project-pictures/assembly_14.jpg)
+![tredmill_panel](./project-pictures/assembly_15.jpg)
+![tredmill_panel](./project-pictures/assembly_16.jpg)
+![tredmill_panel](./project-pictures/assembly_17.jpg)
+![tredmill_panel](./project-pictures/assembly_18.jpg)
+![tredmill_panel](./project-pictures/assembly_19.jpg)
+![tredmill_panel](./project-pictures/assembly_20.jpg)
+![tredmill_panel](./project-pictures/assembly_21.jpg)
+![tredmill_panel](./project-pictures/assembly_22.jpg)
+
+![tredmill_panel](./project-pictures/finished_1.jpg)
+![tredmill_panel](./project-pictures/finished_2.jpg)
+![tredmill_panel](./project-pictures/finished_3.jpg)
+![tredmill_panel](./project-pictures/finished_4.jpg)
+
+![tredmill_panel](./project-pictures/cover_reprint.jpg)
