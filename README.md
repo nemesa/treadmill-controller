@@ -53,11 +53,14 @@ So if we take week 3 which is a:
 then would need to keep track of time and change between run and walk speed **18 times** and if you keep in mind the button press problem if you are an unfortunate invidual who walks at a speed of 4.5 Km/h and runs ant 7.5 Km/h then you will press buttons a woppin **15 x 18 = 270** times.  
 This problem was screeaming for automation.
 
+## Hardware button hack
 
-
+![tredmill_panel](./project-pictures/button_hack_00.jpg)
 ![tredmill_panel](./project-pictures/button_hack_01.jpg)
 ![tredmill_panel](./project-pictures/button_hack_02.jpg)
 ![tredmill_panel](./project-pictures/button_hack_03.jpg)
+
+## Prototype
 
 ![tredmill_panel](./project-pictures/prototype_01.jpg)
 ![tredmill_panel](./project-pictures/prototype_02.jpg)
@@ -67,10 +70,23 @@ This problem was screeaming for automation.
 ![tredmill_panel](./project-pictures/prototype_06.jpg)
 ![tredmill_panel](./project-pictures/prototype_07.jpg)
 
+## PCB
+
+![tredmill_panel](./project-pictures/pcb_plan.jpg)
+![tredmill_panel](./project-pictures/pcb_design.jpg)
+
+## PCB finished
 
 ![tredmill_panel](./project-pictures/pcb_empty.jpg)
-![tredmill_panel](./project-pictures/pck_finished.jpg)
+![tredmill_panel](./project-pictures/pcb_finished.jpg)
 
+## Design the cover
+
+![tredmill_panel](./project-pictures/case_design_pcb.jpg)
+![tredmill_panel](./project-pictures/case_design_display.jpg)
+![tredmill_panel](./project-pictures/case_design_controller.jpg)
+
+## Assembly
 
 ![tredmill_panel](./project-pictures/assembly_01.jpg)
 ![tredmill_panel](./project-pictures/assembly_02.jpg)
@@ -94,9 +110,14 @@ This problem was screeaming for automation.
 ![tredmill_panel](./project-pictures/assembly_21.jpg)
 ![tredmill_panel](./project-pictures/assembly_22.jpg)
 
+## Finished case
+
 ![tredmill_panel](./project-pictures/finished_1.jpg)
 ![tredmill_panel](./project-pictures/finished_2.jpg)
 ![tredmill_panel](./project-pictures/finished_3.jpg)
 ![tredmill_panel](./project-pictures/finished_4.jpg)
 
+## What went wrong
+
 ![tredmill_panel](./project-pictures/cover_reprint.jpg)
+
