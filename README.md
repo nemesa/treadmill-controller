@@ -62,8 +62,6 @@ This problem was screeaming for automation.
 
 ## Prototype
 
-![tredmill_panel](./project-pictures/prototype_01.jpg)
-![tredmill_panel](./project-pictures/prototype_02.jpg)
 ![tredmill_panel](./project-pictures/prototype_03.jpg)
 ![tredmill_panel](./project-pictures/prototype_04.jpg)
 ![tredmill_panel](./project-pictures/prototype_05.jpg)
@@ -88,36 +86,28 @@ This problem was screeaming for automation.
 
 ## Assembly
 
-![tredmill_panel](./project-pictures/assembly_01.jpg)
 ![tredmill_panel](./project-pictures/assembly_02.jpg)
-![tredmill_panel](./project-pictures/assembly_03.jpg)
 ![tredmill_panel](./project-pictures/assembly_04.jpg)
+![tredmill_panel](./project-pictures/assembly_03.jpg)
 ![tredmill_panel](./project-pictures/assembly_05.jpg)
-![tredmill_panel](./project-pictures/assembly_06.jpg)
-![tredmill_panel](./project-pictures/assembly_07.jpg)
 ![tredmill_panel](./project-pictures/assembly_08.jpg)
 ![tredmill_panel](./project-pictures/assembly_09.jpg)
-![tredmill_panel](./project-pictures/assembly_10.jpg)
 ![tredmill_panel](./project-pictures/assembly_11.jpg)
 ![tredmill_panel](./project-pictures/assembly_13.jpg)
 ![tredmill_panel](./project-pictures/assembly_14.jpg)
-![tredmill_panel](./project-pictures/assembly_15.jpg)
 ![tredmill_panel](./project-pictures/assembly_16.jpg)
-![tredmill_panel](./project-pictures/assembly_17.jpg)
 ![tredmill_panel](./project-pictures/assembly_18.jpg)
 ![tredmill_panel](./project-pictures/assembly_19.jpg)
-![tredmill_panel](./project-pictures/assembly_20.jpg)
 ![tredmill_panel](./project-pictures/assembly_21.jpg)
 ![tredmill_panel](./project-pictures/assembly_22.jpg)
 
 ## Finished case
 
-![tredmill_panel](./project-pictures/finished_1.jpg)
-![tredmill_panel](./project-pictures/finished_2.jpg)
-![tredmill_panel](./project-pictures/finished_3.jpg)
 ![tredmill_panel](./project-pictures/finished_4.jpg)
+![tredmill_panel](./project-pictures/finished_3.jpg)
 
 ## What went wrong
 
 ![tredmill_panel](./project-pictures/cover_reprint.jpg)
+![tredmill_panel](./project-pictures/assembly_20.jpg)
 
