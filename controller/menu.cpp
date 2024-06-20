@@ -33,7 +33,7 @@ class MenuHandler {
       setUser(user.num);
 
       setMenu(menuUserSelector, -1, -1);
-      //setMenu(3, -1,-1);
+      //setMenu(menuWorkout, 1, -1);
     }
     void down() {
       if (menu == menuUserSelector) {
@@ -186,6 +186,7 @@ class MenuHandler {
       } else if (menu == menuWorkoutDetauls) {
         setMenu(menuWorkout, 1, 0);
       } else if (menu == menuOtherWorkouts) {
+        user = eh->getLastSelectedUser();
         user.lastSelection = subMenu;
         eh->writeUserData(user);
         setMenu(menuWorkout, 1, 0);
@@ -271,6 +272,7 @@ class MenuHandler {
             char* timeToShow = "X: 00:00";
             getTime(timeToShow, workoutSection, timeTick);
             dh->main(false, timeToShow);
+            dh->progressBar(getWorkoutProgressPecentage());
 
             short currentTarget = workoutTimers[workoutSection];
             if (isRunningInSection(workoutSection)) {
@@ -297,6 +299,7 @@ class MenuHandler {
 
             timeTick++;
           } else {
+            dh->progressBar(0);
             if (startTimeTick < 6) {
               char num[2] = { 0, 0 };
               short t = 5 - startTimeTick;
@@ -338,7 +341,6 @@ class MenuHandler {
     int timeTick = 0;
     bool hasWorkoutStarted = false;
     short startTimeTick = 0;
-    short workoutSection = 0;
     char * getHeader() {
       char* name = "                    ";
       for (int i = 0; i < 19; i++) {
@@ -576,21 +578,28 @@ class MenuHandler {
           dh->headerNavigationWithMain(doCleanAll, "Run Speed:", true, true, true, false, getSpeed(user.runSpeed));
         }
       } else if (menu == menuWorkout) {
+        dh->progressBar(0);
         if (subMenu == 1) {
           hasWorkoutStarted = false;
           timeTick = 0;
           workoutSection = 0;
           dh->headerNavigationWithMain(false, wh.getNameById(user.lastSelection), false, true, false, false, "START");
+          workoutTimersLength = 0;
           for (uint8_t i = 0; i < 20; i++) {
             workoutTimers[i] = 0;
           }
 
           wh.getTimersById(workoutTimers, user.lastSelection);
           for (uint8_t i = 0; i < 20; i++) {
+            if (workoutTimers[i] != 0) {
+              workoutTimersLength++;
+            }
             Serial.print(workoutTimers[i]);
             Serial.print(F(", "));
           }
           Serial.println(F(""));
+          Serial.print(F("workoutTimersLength: "));
+          Serial.println(workoutTimersLength);
         }
         if (subMenu == 2) {
           hasWorkoutStarted = false;
@@ -602,7 +611,7 @@ class MenuHandler {
           hasWorkoutStarted = false;
           startTimeTick = 0;
           rh->stop(&pinMap);
-          dh->headerNavigationWithMain(doCleanAll, "Paused", false, true, false, false, "START");
+          dh->headerNavigationWithMain(doCleanAll, "Paused", false, true, false, false, "START");          
         }
         if (subMenu == 4) {
           hasWorkoutStarted = false;
@@ -788,7 +797,15 @@ class MenuHandler {
       walkSpeed = user.walkSpeed;
       runSpeed = user.runSpeed;
     }
+
     uint8_t next(uint8_t min, uint8_t max, uint8_t current, bool isUp, bool allowOverFlow) {
+
+      Serial.print(F("next min:"));
+      Serial.print(min);
+      Serial.print(F(" - max:"));
+      Serial.print(max);
+      Serial.print(F(" - current:"));
+      Serial.println(current);
       if (isUp) {
         current++;
         if (current > max) {
@@ -808,7 +825,23 @@ class MenuHandler {
           }
         }
       }
+      
       return current;
+    }
+
+    byte getWorkoutProgressPecentage() {
+      /*Serial.print(F("getWorkoutProgressPecentage workoutSection: "));
+        Serial.print(workoutSection);
+        Serial.print(F(" workoutTimersLength: "));
+        Serial.println(workoutTimersLength);*/
+      if (workoutTimersLength == workoutSection + 1) {
+        return 100;
+      }
+      float current = (workoutSection + 1);
+      float all = workoutTimersLength;
+      float percent =  ( current / all) * 100;
+      //Serial.println(percent);
+      return floor(percent);
     }
     UserDataStruct user;
     ControlPinMapStruct pinMap;
@@ -816,5 +849,7 @@ class MenuHandler {
     WorkoutHandler wh;
     DisplayHandler* dh;
     RelayHandler* rh;
+    short workoutSection = 0;
     short workoutTimers[20] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    byte workoutTimersLength;
 };

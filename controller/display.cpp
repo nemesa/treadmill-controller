@@ -28,6 +28,8 @@ void DisplayHandler::cleanAll() {
   display.display();
 }
 void DisplayHandler::header(bool doClean, char* text) {
+  Serial.print(F("DisplayHandler-header: "));
+  Serial.println(text);
   if (doClean) {
     display.fillRect(0, 0, 127, 31, BLACK);
   }
@@ -39,6 +41,8 @@ void DisplayHandler::header(bool doClean, char* text) {
   display.display();
 }
 void DisplayHandler::main(bool doClean, char* text) {
+  Serial.print(F("DisplayHandler-main: "));
+  Serial.println(text);
   if (doClean) {
     display.fillRect(0, 0, 127, 31, BLACK);
   }
@@ -49,6 +53,8 @@ void DisplayHandler::main(bool doClean, char* text) {
   display.display();
 }
 void DisplayHandler::mainSmallLine1(char* text) {
+  Serial.print(F("DisplayHandler-mainSmallLine1: "));
+  Serial.println(text);
   display.setTextSize(1);
   display.fillRect(7, 14, 117, 8, BLACK);
   display.setCursor(7, 14);
@@ -56,6 +62,8 @@ void DisplayHandler::mainSmallLine1(char* text) {
   display.display();
 }
 void DisplayHandler::mainSmallLine2(char* text) {
+  Serial.print(F("DisplayHandler-mainSmallLine2: "));
+  Serial.println(text);
   display.setTextSize(1);
   display.fillRect(7, 22, 117, 7, BLACK);
   display.setCursor(7, 22);
@@ -63,6 +71,7 @@ void DisplayHandler::mainSmallLine2(char* text) {
   display.display();
 }
 void DisplayHandler::navigationOptions(bool hasUp, bool hasLeft, bool hasDown, bool hasRight) {
+  Serial.println(F("DisplayHandler-navigationOptions: "));
 
   if (hasUp) {
     display.drawTriangle(64, 10, 62, 12, 66, 12, WHITE);
@@ -93,6 +102,7 @@ void DisplayHandler::navigationOptions(bool hasUp, bool hasLeft, bool hasDown, b
 
 
 void DisplayHandler::headerWithMain(bool doClean, char* headerMessage, char* mainMessage) {
+  Serial.println(F("DisplayHandler-headerWithMain"));
   if (doClean) {
     display.fillRect(0, 0, 127, 31, BLACK);
   }
@@ -111,6 +121,7 @@ void DisplayHandler::headerWithMain(bool doClean, char* headerMessage, char* mai
 };
 
 void DisplayHandler::headerNavigationWithMain(bool doClean, char* headerMessage, bool hasNavUp, bool hasNavLeft, bool hasNavDown, bool hasNavRight, char* mainMessage) {
+  Serial.println(F("DisplayHandler-headerNavigationWithMain"));
   if (doClean) {
     display.fillRect(0, 0, 127, 31, BLACK);
   }
@@ -130,6 +141,7 @@ void DisplayHandler::headerNavigationWithMain(bool doClean, char* headerMessage,
   navigationOptions(hasNavUp, hasNavLeft, hasNavDown, hasNavRight);
 };
 void DisplayHandler::headerNavigationSmallLines(bool doClean, char* headerMessage, bool hasNavUp, bool hasNavLeft, bool hasNavDown, bool hasNavRight, char* sl1, char* sl2) {
+  Serial.println(F("DisplayHandler-headerNavigationSmallLines"));
   if (doClean) {
     display.fillRect(0, 0, 127, 31, BLACK);
   }
@@ -150,3 +162,18 @@ void DisplayHandler::headerNavigationSmallLines(bool doClean, char* headerMessag
 
   navigationOptions(hasNavUp, hasNavLeft, hasNavDown, hasNavRight);
 };
+
+void DisplayHandler::progressBar(byte pecentage) {
+  Serial.print(F("DisplayHandler-progressBar pecentage:"));
+  Serial.println(pecentage);
+  if (pecentage == 0) {
+    display.fillRect(0, 30, 127, 2, BLACK);
+  } else {
+    float all = 127;
+    float p = pecentage;
+    float pixels = all * (p / 100);    
+    display.fillRect(0, 30, floor(pixels), 2, WHITE);
+  }
+
+  display.display();
+}

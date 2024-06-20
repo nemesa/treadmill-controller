@@ -44,6 +44,10 @@ void RelayHandler::toSpeed(ControlPinMapStruct* pinMap, uint8_t speed) {
   Serial.print(F("RelayHandler-speed "));
   Serial.println(speed);
 
+  if (currentSpeed == speed) {
+    return;
+  }
+
 
   if (speed < 45) {
     currentSpeed = 30;
