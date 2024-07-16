@@ -199,10 +199,10 @@ private:
       result[11] = '|';
       result[12] = '3';
       result[13] = 'R';
-      result[14] = ']';
-      result[15] = '|';
-      result[16] = '2';
-      result[17] = 'W';
+      result[14] = '|';
+      result[15] = '2';
+      result[16] = 'W';
+      result[17] = ']';
     } else if (week == 8) {
       //"4W|[3|3R|2W]|3W"
       result[0] = '4';
@@ -267,10 +267,10 @@ private:
       result[8] = '|';
       result[9] = '2';
       result[10] = 'W';
-      result[11] = '|';
-      result[12] = '3';
-      result[13] = 'R';
-      result[14] = ']';
+      result[11] = ']';
+      result[12] = '|';
+      result[13] = '3';
+      result[14] = 'R';
       result[15] = '|';
       result[16] = '4';
       result[17] = 'W';
@@ -406,23 +406,23 @@ private:
       //"5W|15R|2W|[2|5R|2W]"
       result[0] = '5';
       result[1] = 'W';
-      result[3] = '|';
-      result[4] = '1';
-      result[5] = '5';
-      result[6] = 'R';
-      result[7] = '|';
-      result[8] = '2';
-      result[9] = 'W';
-      result[10] = '|';
-      result[11] = '[';
-      result[12] = '2';
-      result[13] = '|';
-      result[14] = '5';
-      result[15] = 'R';
-      result[16] = '|';
-      result[17] = '2';
-      result[18] = 'W';
-      result[19] = ']';
+      result[2] = '|';
+      result[3] = '1';
+      result[4] = '5';
+      result[5] = 'R';
+      result[6] = '|';
+      result[7] = '2';
+      result[8] = 'W';
+      result[9] = '|';
+      result[10] = '[';
+      result[11] = '2';
+      result[12] = '|';
+      result[13] = '5';
+      result[14] = 'R';
+      result[15] = '|';
+      result[16] = '2';
+      result[17] = 'W';
+      result[18] = ']';
     } else if (week == 21) {
       //"5W|[3|9R|2W]"
       result[0] = '5';
@@ -488,12 +488,12 @@ private:
       result[7] = '2';
       result[8] = 'W';
       result[9] = '|';
-      result[11] = '1';
-      result[12] = '0';
-      result[13] = 'R';
-      result[14] = '|';
-      result[15] = '4';
-      result[16] = 'W';
+      result[10] = '1';
+      result[11] = '0';
+      result[12] = 'R';
+      result[13] = '|';
+      result[14] = '4';
+      result[15] = 'W';
     } else {
       result = "";
     }
